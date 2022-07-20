@@ -13,7 +13,7 @@ export default async function (req, res) {
     const url = `https://api.allotrope.id/oauth/token?auth_code=${encodeURIComponent(auth_code)}&code_verifier=${encodeURIComponent(codeVerifier)}&code_challenge=${encodeURIComponent(codeChallenge)}&method=S256`;
     const response = await fetch(url).then(response => response.json());
     const oneHrInMs = 60 * 60 * 1000;
-    cookies.set('assemble_access_token', codeVerifier, {
+    cookies.set('assemble_access_token', response.access_token, {
       overwrite: true,
       httpOnly: true,
       expires: new Date(Date.now() + oneHrInMs),
