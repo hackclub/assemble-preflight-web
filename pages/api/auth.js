@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 
 export default async function (req, res) {
     const cookies = new Cookies(req, res);
+    if (cookies.get('assemble_use_localhost') === 'true') return res.redirect('http://localhost:3000/api/auth?auth_code=' + encodeURIComponent(req.query.auth_code));
     const { auth_code } = req.query;
     const codeVerifier = cookies.get('assemble_code_verifier');
     const codeChallenge = crypto

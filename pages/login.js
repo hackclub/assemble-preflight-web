@@ -1,6 +1,16 @@
 import getAuthorizeURL from '../lib/server/auth.js'
+import { useEffect } from 'react'
+import getCookie from '../lib/cookie.js'
 
 export default function Login ({ loginUrl, error }) {
+    useEffect(() => {
+      let cookie = getCookie('assemble_access_token');
+      if (cookie && !error) {
+        location.replace('/');
+      } else {
+        location.replace(loginUrl);
+      }
+    }, []);
     return (
         <div>
             <h1>Login</h1>
