@@ -8,6 +8,7 @@ export default function Home() {
   const [status, setStatus] = useState('loading');
   const [accessToken, setAccessToken] = useState('');
   const [userData, setUserData] = useState({});
+  const [greeting, setGreeting] = useState('Hello')
   useEffect(() => {
     (async () => {
       let cookie = await fetch('/api/token').then(res => res.text());
@@ -19,6 +20,18 @@ export default function Home() {
         setStatus('unauthed');
       }
     })();
+
+    let myDate = new Date();
+    let hrs = myDate.getHours();
+    let greet;
+
+    if (hrs < 12)
+        greet = 'Good morning';
+    else if (hrs >= 12 && hrs <= 17)
+        greet = 'Good afternoon';
+    else if (hrs >= 17 && hrs <= 24)
+        greet = 'Good evening';
+    setGreeting(greet);
   }, []);
   return (
     <div className={styles.container}>
@@ -35,8 +48,7 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>{JSON.stringify(userData)}</code>
+          {greeting}, {userData?.name?.split(' ')?.[0] || '(error: name not found)'}!
         </p>
 
         <div className={styles.grid}>
@@ -87,7 +99,9 @@ export default function Home() {
         </div>
       </main>}
 
-      {status == 'loading' && <main className={styles.main}>
+      {(status == 'loading' || (
+        status == 'authed' && Object.keys(userData).length == 0
+      )) && <main className={styles.main}>
         <h1 className={styles.title}>
           Assemble Preflight
         </h1>
