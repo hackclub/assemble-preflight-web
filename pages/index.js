@@ -8,14 +8,16 @@ export default function Home() {
   const [status, setStatus] = useState('loading');
   const [accessToken, setAccessToken] = useState('');
   useEffect(() => {
-    let cookie = await fetch('/api/token').then(res => res.text());
-    alert(cookie);
-    if (cookie) {
-      setAccessToken(cookie);
-      setStatus('authed');
-    } else {
-      setStatus('unauthed');
-    }
+    (async () => {
+      let cookie = await fetch('/api/token').then(res => res.text());
+      alert(cookie);
+      if (cookie) {
+        setAccessToken(cookie);
+        setStatus('authed');
+      } else {
+        setStatus('unauthed');
+      }
+    })();
   }, []);
   return (
     <div className={styles.container}>
