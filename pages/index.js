@@ -10,6 +10,7 @@ export default function Home() {
   const [userData, setUserData] = useState({});
   const [greeting, setGreeting] = useState('Hello');
   const [cardType, setCardType] = useState('');
+  const [file, setFile] = useState(null);
   useEffect(() => {
     (async () => {
       let cookie = await fetch('/api/token').then(res => res.text());
@@ -60,14 +61,14 @@ export default function Home() {
             setCardType('virtual');
           }}>
             <h2>Mobile &rarr;</h2>
-            <p>I have a virtual card.</p>
+            <p>I have a screenshot of my virtual card.</p>
           </a>
           <a href="javascript:void 0;" className={styles.card} onClick={() => {
             setStatus('upload');
             setCardType('physical');
           }}>
             <h2>Physical &rarr;</h2>
-            <p>I can upload a picture of my physical card.</p>
+            <p>I have a picture of my physical card.</p>
           </a>
         </div>
       </main>}
@@ -78,25 +79,13 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-        Proof of {userData?.name?.split(' ')?.[0]}'s {cardType[0] + cardType.substring(1)} Vaccine Card👋 
+        Proof of {userData?.name?.split(' ')?.[0]}'s {cardType[0].toUpperCase() + cardType.substring(1)} Vaccine Card👋
         </p>
+        
+        <input type="file" accept="image/*" onChange={(e) => {
+          setFile(e.target.files[0]);
+        }} />
 
-        <div className={styles.grid}>
-          <a href="javascript:void 0;" className={styles.card} onClick={() => {
-            setStatus('upload');
-            setCardType('virtual');
-          }}>
-            <h2>Mobile &rarr;</h2>
-            <p>I have a virtual card.</p>
-          </a>
-          <a href="javascript:void 0;" className={styles.card} onClick={() => {
-            setStatus('upload');
-            setCardType('physical');
-          }}>
-            <h2>Physical &rarr;</h2>
-            <p>I can upload a picture of my physical card.</p>
-          </a>
-        </div>
       </main>}
 
       {status == 'unauthed' && <main className={styles.main}>
