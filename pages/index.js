@@ -7,13 +7,14 @@ import { useState, useEffect } from 'react'
 export default function Home() {
   const [status, setStatus] = useState('loading');
   const [accessToken, setAccessToken] = useState('');
+  const [userData, setUserData] = useState({});
   useEffect(() => {
     (async () => {
       let cookie = await fetch('/api/token').then(res => res.text());
-      alert(cookie);
       if (cookie) {
         setAccessToken(cookie);
         setStatus('authed');
+        setUserData(await fetch('/api/me').then(res => res.json()));
       } else {
         setStatus('unauthed');
       }
@@ -30,12 +31,12 @@ export default function Home() {
 
       {status == 'authed' && <main className={styles.main}>
         <h1 className={styles.title}>
-          {status} Welcome to <a href="/login">Login</a>
+          Assemble Preflight
         </h1>
 
         <p className={styles.description}>
           Get started by editing{' '}
-          <code className={styles.code}>{accessToken}</code>
+          <code className={styles.code}>{JSON.stringify(userData)}</code>
         </p>
 
         <div className={styles.grid}>
