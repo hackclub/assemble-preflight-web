@@ -16,7 +16,6 @@ export default async function (req, res) {
     const oneHrInMs = 60 * 60 * 1000;
     cookies.set('assemble_access_token', response.access_token, {
       overwrite: true,
-      httpOnly: true,
       expires: new Date(Date.now() + oneHrInMs),
     });
     res.redirect('/');
