@@ -8,7 +8,8 @@ export default function Home() {
   const [status, setStatus] = useState('loading');
   const [accessToken, setAccessToken] = useState('');
   useEffect(() => {
-    let cookie = getCookie('assemble_access_token');
+    let cookie = await fetch('/api/token').then(res => res.text());
+    alert(cookie);
     if (cookie) {
       setAccessToken(cookie);
       setStatus('authed');
