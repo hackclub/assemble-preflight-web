@@ -19,5 +19,5 @@ export default async function (req, res) {
       httpOnly: true,
       expires: new Date(Date.now() + oneHrInMs),
     });
-    res.redirect('/vaccine');
+    res.redirect('/');
 }

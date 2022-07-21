@@ -21,15 +21,8 @@
   align-items: center;
 }
 
-.footer a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-}
-
-.title a {
-  color: #0070f3;
+.title a, .footer a {
+  color: #fa4639;
   text-decoration: none;
 }
 
@@ -88,8 +81,8 @@
 .card:hover,
 .card:focus,
 .card:active {
-  color: #0070f3;
-  border-color: #0070f3;
+  color: #fa4639;
+  border-color: #fa4639;
 }
 
 .card h2 {
