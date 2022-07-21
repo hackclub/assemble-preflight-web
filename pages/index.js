@@ -11,6 +11,7 @@ export default function Home() {
   const [greeting, setGreeting] = useState('Hello');
   const [cardType, setCardType] = useState('');
   const [file, setFile] = useState(null);
+  const [qr, setQr] = useState(null);
   useEffect(() => {
     (async () => {
       let cookie = await fetch('/api/token').then(res => res.text());
@@ -21,6 +22,10 @@ export default function Home() {
       } else {
         setStatus('unauthed');
       }
+      import('/qr.js').then(library => {
+        console.log({ library });
+        setQr(library);
+      });
     })();
 
     let myDate = new Date();
@@ -44,6 +49,7 @@ export default function Home() {
         <link rel="favicon" href="https://assemble.hackclub.com/invert.png" />
         <link rel="shortcut icon" href="https://assemble.hackclub.com/invert.png" />
       </Head>
+      <canvas id="canvas" width="0" height="0" style={{ display: 'none' }}></canvas>
 
 
       {status == 'authed' && <main className={styles.main}>
@@ -79,12 +85,54 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-        Proof of {userData?.name?.split(' ')?.[0]}'s {cardType[0].toUpperCase() + cardType.substring(1)} Vaccine Card👋
+        Proof of {userData?.name?.split(' ')?.[0]}'s {cardType[0].toUpperCase() + cardType.substring(1)} Vaccine Card
         </p>
         
         <input type="file" accept="image/*" onChange={(e) => {
-          setFile(e.target.files[0]);
+const convertURIToImageData = (url) => {
+  return new Promise((resolve, reject) => {
+    if (!url) {
+      return reject();
+    }
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    const image = document.createElement('img')
+    image.onload = () => {
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      resolve(context.getImageData(0, 0, canvas.width, canvas.height));
+    }
+    image.crossOrigin = "Anonymous";
+    image.src = url;
+  });
+}
+const reader = new FileReader();
+
+reader.addEventListener("load", function () {
+  // convert image file to base64 string
+  convertURIToImageData(reader.result).then(imageData => {
+    console.log(imageData);
+    setFile(imageData);
+  });
+}, false);
+
+  reader.readAsDataURL(e.target.files[0]);
+
+        
+
+
         }} />
+
+        <p className={styles.description}>
+          <a href="javascript:void 0;" style={{ color: '#fa4639' }}>
+            Continue
+          </a>
+          {' | '}
+          <a href="/" style={{ color: '#fa4639' }}>
+            Restart
+          </a>
+        </p>
 
       </main>}
 
@@ -124,7 +172,6 @@ export default function Home() {
             href="https://github.com/hackclub/assemble"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: 'red' }}
           >
             hackclub/assemble
           </a>
