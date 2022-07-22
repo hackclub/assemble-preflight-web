@@ -91,8 +91,12 @@ export default function Home() {
               document.getElementById("fileinput").click()
             }
           }}>
-            <Heading>{loading ? 'Loading...' : (statusTranslator[userData.vaccinationData?.status] || <>Upload Proof of Vaccination <span className="arrow">&rarr;</span></>)}</Heading>
+            <Heading>{(loading) ? 'Loading...' : (statusTranslator[userData.vaccinationData?.status] || <>Upload Proof of Vaccination <span className="arrow">&rarr;</span></>)}</Heading>
           </Box>
+          {userData?.vaccinationData?.record?.image?.data && <img src={`data:${userData?.vaccinationData?.record?.image?.filetype};base64,${userData?.vaccinationData?.record?.image?.data}`} style={{
+            width: '100%',
+            borderRadius: '3px'
+          }} />}
           <Box bg="orange" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800, opacity: 0.5 }}>Required: Negative ART Test</Box>
           <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400, opacity: 0.5 }}>
             <Heading>Upload Coming Soon...</Heading>
