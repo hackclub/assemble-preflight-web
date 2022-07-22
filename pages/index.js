@@ -79,7 +79,7 @@ export default function Home() {
           method: 'POST',
           body: formData,
         };
-        await fetch('https://a9bc-73-25-196-61.ngrok.io/users', {
+        await fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -145,7 +145,7 @@ export default function Home() {
             <Heading mb={2}>Web &rarr;</Heading>
             <Box>Sign in to start the preflight & vaccine verification process in your browser.</Box>
           </Box>
-          <Box bg="sunken" p={3} mb={3} as="a" href="assembleticketing://checkin" style={{ display: 'block', bg: 'sunken', borderRadius: 3 }}>
+          <Box bg="sunken" p={3} mb={3} as="a" href={process.env.NEXT_PUBLIC_APPSTORE_URL} style={{ display: 'block', bg: 'sunken', borderRadius: 3 }}>
             <Heading mb={2}>iOS App &rarr;</Heading>
             <Box>Download the iOS app for preflight, vaccine verification, and real-time event integration.</Box>
           </Box>
