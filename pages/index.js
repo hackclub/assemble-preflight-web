@@ -260,7 +260,7 @@ export default function Home() {
                   }
                 };
                 setLoading(true);
-                fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/vaccinations/image/base64`, options)
+                fetch(`https://api.yodacode.xyz/assemble/base64`, options)
                   .then((res) => res.json())
                   .then((json) => {
                     if (!json.error) {
