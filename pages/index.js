@@ -72,7 +72,9 @@ export default function Home() {
       if (cookie) {
         setAccessToken(cookie);
         setStatus("authed");
-        setUserData(await fetch("/api/records").then((res) => res.json()));
+        setUserData(await fetch("https:/api.yodacode.xyz/assemble/records", {
+          headers: { Authorization: `Bearer ${cookie}` }
+        }).then((res) => res.json()));
       } else {
         setStatus("unauthed");
       }
