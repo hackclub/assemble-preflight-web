@@ -48,7 +48,7 @@ export default function Home() {
         <link rel="shortcut icon" href="https://assemble.hackclub.com/invert.png" />
       </Head>
       <canvas id="canvas" width="0" height="0" style={{ display: 'none' }}></canvas>
-      {status == 'unauthed' && <Box bg="blue" py={3} sx={{ minHeight: '100vh' }}>
+      {status == 'authed' && <Box py={3} sx={{ minHeight: '100vh', backgroundImage: 'linear-gradient(90deg, rgba(2,0,36,0.37718837535014005) 0%, rgba(2,0,36,0.36318277310924374) 35%, rgba(2,0,36,0.36878501400560226) 100%), url(https://cloud-2ppyw38ar-hack-club-bot.vercel.app/0golden-bay.png)', backgroundSize: 'cover' }}>
         <Container py={3} variant="copy" bg="white" sx={{ borderRadius: 4 }}>
         <Heading as="h1" mb={3}>
           Assemble Preflight & Ticketing
@@ -128,7 +128,7 @@ export default function Home() {
           Uploaded, page not complete
         </p>
       </main>}
-      {status == 'unauthed' && <Box bg="blue" py={3} sx={{ minHeight: '100vh' }}><Container py={3} variant="copy" bg="white" sx={{ borderRadius: 4 }}>
+      {status == 'unauthed' && <Box py={3} sx={{ minHeight: '100vh', backgroundImage: 'linear-gradient(90deg, rgba(2,0,36,0.37718837535014005) 0%, rgba(2,0,36,0.36318277310924374) 35%, rgba(2,0,36,0.36878501400560226) 100%), url(https://cloud-2ppyw38ar-hack-club-bot.vercel.app/0golden-bay.png)', backgroundSize: 'cover' }}><Container py={3} variant="copy" bg="white" sx={{ borderRadius: 4 }}>
         <Heading as="h1" mb={3}>
           Assemble Preflight & Ticketing
         </Heading>
@@ -154,7 +154,7 @@ export default function Home() {
 
       {(status == 'loading' || (
         status == 'authed' && Object.keys(userData).length == 0
-      )) && <Box bg="blue" py={3} sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      )) && <Box py={3} sx={{ minHeight: '100vh', backgroundImage: 'linear-gradient(90deg, rgba(2,0,36,0.37718837535014005) 0%, rgba(2,0,36,0.36318277310924374) 35%, rgba(2,0,36,0.36878501400560226) 100%), url(https://cloud-2ppyw38ar-hack-club-bot.vercel.app/0golden-bay.png)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundSize: 'cover' }}>
           <Heading sx={{color: 'white'}}>
             Loading, please wait...
           </Heading>
