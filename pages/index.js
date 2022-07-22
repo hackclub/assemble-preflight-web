@@ -129,7 +129,7 @@ export default function Home() {
             // convert image file to base64 string
             convertURIToImageData(reader.result).then(imageData => {
             console.log(imageData);
-            
+            /*
             qr(imageData.data, imageData.width, imageData.height).then(output => {
             if (output) {
               // qr code
@@ -138,7 +138,7 @@ export default function Home() {
             })
             });
             }, false);
-
+            */
             reader.readAsDataURL(e.target.files[0]);
 
             const formData = new FormData();
