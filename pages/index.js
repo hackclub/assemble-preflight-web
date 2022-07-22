@@ -14,22 +14,47 @@ const toBase64 = file => new Promise((resolve, reject) => {
   reader.onerror = error => reject(error);
 });
 
-let statusTranslator = {
-  verified: "Vaccination verified!",
-  verifiedWithDiscrepancy: `We're reviewing your vaccine proof.`,
-  humanReviewRequired: `We're reviewing your vaccine proof.`,
+let statusMessageTranslator = {
+  verified: "Your proof of vaccination has been verified!",
+  verifiedWithDiscrepancy: `We're reviewing your proof of vaccination.`,
+  humanReviewRequired: `We're reviewing your proof of vaccination.`,
+  denied: `Your vaccination proof was denied, please upload new proof`,
+  noData: `Please upload proof of vaccination.`,
+}
+
+let statusButtonTranslator = {
+  verified: (
+    <>
+      Re-upload proof{" "}
+      <span className="arrow">&rarr;</span>
+    </>
+  ),
+  verifiedWithDiscrepancy: (
+    <>
+      Re-upload proof{" "}
+      <span className="arrow">&rarr;</span>
+    </>
+  ),
+  verified: (
+    <>
+      Re-upload proof{" "}
+      <span className="arrow">&rarr;</span>
+    </>
+  ),
   denied: (
     <>
-      Your vaccination proof was denied, please upload new proof{" "}
+      Re-upload proof{" "}
       <span className="arrow">&rarr;</span>
     </>
   ),
   noData: (
     <>
-      Upload Proof of Vaccination <span className="arrow">&rarr;</span>
+      Upload proof{" "}
+      <span className="arrow">&rarr;</span>
     </>
-  ),
-};
+  )
+}
+
 
 export default function Home() {
   const [status, setStatus] = useState("loading");
@@ -40,6 +65,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState('');
   useEffect(() => {
     (async () => {
       let cookie = await fetch("/api/token").then((res) => res.text());
@@ -104,7 +130,7 @@ export default function Home() {
               to the event). After both have been verified, you will be provided
               a ticket with a barcode. Please screenshot this barcode or add it
               to Apple/Google Wallet and then present it at the front door
-              during checkin. {JSON.stringify(userData)}
+              during checkin.
             </Box>
             <Box
               bg="green"
@@ -121,6 +147,9 @@ export default function Home() {
             >
               Required: Full Vaccination Against COVID-19
             </Box>
+            <Heading mb={3}>
+              {statusMessageTranslator[userData.vaccinationData?.status]}
+            </Heading>
             <Box
               bg="sunken"
               className="card"
@@ -132,22 +161,24 @@ export default function Home() {
                 borderRadius: 3,
                 fontWeight: 400,
                 cursor:
-                  userData.vaccinationData?.status == "humanReviewRequired" ||
-                  userData.vaccinationData?.status ==
-                    "verifiedWithDiscrepancy" ||
-                  userData.vaccinationData?.status == "verified" ||
-                  loading
-                    ? "default"
-                    : "pointer",
+                  // userData.vaccinationData?.status == "humanReviewRequired" ||
+                  // userData.vaccinationData?.status ==
+                  //   "verifiedWithDiscrepancy" ||
+                  // userData.vaccinationData?.status == "verified" ||
+                  // loading
+                    // ? "default"
+                    // : "pointer",
+                  'pointer'
               }}
               href="javascript:void 0;"
               onClick={() => {
                 if (
-                  userData.vaccinationData?.status == "humanReviewRequired" ||
-                  userData.vaccinationData?.status ==
-                    "verifiedWithDiscrepancy" ||
-                  userData.vaccinationData?.status == "verified" ||
-                  loading
+                  // userData.vaccinationData?.status == "humanReviewRequired" ||
+                  // userData.vaccinationData?.status ==
+                  //   "verifiedWithDiscrepancy" ||
+                  // userData.vaccinationData?.status == "verified" ||
+                  // loading
+                  false
                 ) {
                   return;
                 } else {
@@ -155,10 +186,10 @@ export default function Home() {
                 }
               }}
             >
-              <Heading>
+              <Heading variant="lead" my={0} style={{ lineHeight: '0px' }}>
                 {loading
                   ? "Loading..."
-                  : statusTranslator[userData.vaccinationData?.status] || (
+                  : statusButtonTranslator[userData.vaccinationData?.status] || (
                       <>
                         Upload Proof of Vaccination{" "}
                         <span className="arrow">&rarr;</span>
@@ -239,16 +270,17 @@ export default function Home() {
                 );
                 setLoading(true);
                 fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/vaccinations/image/base64`, options)
-                  .then((res) => res.text())
-                  .then((text) => {
-                    alert(text);
-                    if (text == "OK") {
+                  .then((res) => res.json())
+                  .then((json) => {
+                    if (!json.error) {
                       router.reload();
                     } else {
+                      setErrorMessage(json.reason);
                       setStatus("error");
                     }
                   })
                   .catch(() => {
+                    setErrorMessageMessage('Unexpected Error Occurred While Uploading Image');
                     setStatus("error");
                   });
               }}
@@ -263,7 +295,7 @@ export default function Home() {
             Assemble Preflight & Ticketing
           </Heading>
 
-          <p>🛑 Unexpected Error Occurred</p>
+          <p>🛑 {errorMessage || `Unexpected Error Occurred`}</p>
 
           <div>
             <a
