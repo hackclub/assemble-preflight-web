@@ -3,7 +3,8 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import getCookie from '../lib/cookie.js'
 import { useState, useEffect } from 'react'
-import { Box, Container, Heading } from 'theme-ui'
+import qr from 'jsqr'
+import { Box, Container, Heading, Grid, Input, Button } from 'theme-ui'
 
 export default function Home() {
   const [status, setStatus] = useState('loading');
@@ -47,40 +48,63 @@ export default function Home() {
         <link rel="shortcut icon" href="https://assemble.hackclub.com/invert.png" />
       </Head>
       <canvas id="canvas" width="0" height="0" style={{ display: 'none' }}></canvas>
-      {status == 'authed' && <main>
+      {status == 'unauthed' && <Box bg="blue" py={3} sx={{ minHeight: '100vh' }}>
+        <Container py={3} variant="copy" bg="white" sx={{ borderRadius: 4 }}>
+        <Heading as="h1" mb={3}>
+          Assemble Preflight & Ticketing
+        </Heading>
+        <Box bg="red" p={3} mb={3} sx={{ borderRadius: 3, color: 'white' }}>
+          👋 {userData?.name?.split(' ')?.[0] ? `${greeting}, ${userData?.name?.split(' ')?.[0]}` : greeting}! Please use this portal to upload
+          your proof of vaccination and your negative COVID-19 test (option will become available nearer
+          to the event). After both have been verified, you will be provided a ticket
+          with a barcode. Please screenshot this barcode or add it to Apple/Google Wallet
+          and then present it at the front door during checkin.
+        </Box>
+        <Box bg="green" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800 }}>Required: Full Vaccination Against COVID-19</Box>
+        <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400 }} href="javascript:void 0;" onClick={() => {
+          document.getElementById("fileinput").click()
+        }}>
+          <Heading>Upload Proof of Vaccination &rarr;</Heading>
+        </Box>
+        <Box bg="orange" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800, opacity: 0.5 }}>Required: Negative ART Test</Box>
+        <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400, opacity: 0.5 }}>
+          <Heading>Upload Coming Soon...</Heading>
+        </Box>
+        <input type="file" accept="image/*" id="fileinput" style={{display: 'none'}} onChange={async (e) => {
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('data', file, 'assemble_web_' + file.name);
+        formData.append('token', accessToken);
+        const options = {
+          method: 'POST',
+          body: formData,
+        };
+        await fetch('https://a9bc-73-25-196-61.ngrok.io/users', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          }
+        })
+        fetch('https://api.yodacode.xyz/assemble/vaccines', options).then(res => res.text()).then(text => {
+          if (text == 'OK') {
+            setStatus('uploaded');
+          } else {
+            setStatus('error');
+          }
+        }).catch(() => {
+          setStatus('error');
+        });
+        }} />
+        </Container>
+      </Box>}
+
+      {status == 'error' && <main>
         <Heading as="h1" mb={3}>
           Assemble Preflight & Ticketing
         </Heading>
 
         <p>
-          👋 {userData?.name?.split(' ')?.[0] ? `${greeting}, ${userData?.name?.split(' ')?.[0]}` : greeting}
-        </p>
-
-        <div>
-          <a href="javascript:void 0;" onClick={() => {
-            setStatus('upload');
-            setCardType('virtual');
-          }}>
-            <h2>Mobile &rarr;</h2>
-            <p>I have a screenshot of my virtual card.</p>
-          </a>
-          <a href="javascript:void 0;" onClick={() => {
-            setStatus('upload');
-            setCardType('physical');
-          }}>
-            <h2>Physical &rarr;</h2>
-            <p>I have a picture of my physical card.</p>
-          </a>
-        </div>
-      </main>}
-      
-      {status == 'error' && <main>
-      <Heading as="h1" mb={3}>
-          Assemble Preflight & Ticketing
-        </Heading>
-
-        <p>
-        🛑 Unexpected Error Occurred
+          🛑 Unexpected Error Occurred
         </p>
 
         <div>
@@ -92,89 +116,29 @@ export default function Home() {
           </a>
         </div>
 
-          <p>Please report this error if it does not automatically resolve.</p>
-
-
+        <p>Please report this error if it does not automatically resolve.</p>
       </main>}
-      
+
       {status == 'uploaded' && <main>
-      <Heading as="h1" mb={3}>
+        <Heading as="h1" mb={3}>
           Assemble Preflight & Ticketing
         </Heading>
 
         <p>
-        Uploaded, page not complete
+          Uploaded, page not complete
         </p>
       </main>}
-
-      {status == 'upload' && <main>
-      <Heading as="h1" mb={3}>
-          Assemble Preflight & Ticketing
-        </Heading>
-
-        <p>
-          Proof of {userData?.name?.split(' ')?.[0]}'s {cardType[0].toUpperCase() + cardType.substring(1)} Vaccine Card
-        </p>
-
-        <input type="file" accept="image/*" onChange={async (e) => {
-          const file = e.target.files[0];
-          const formData = new FormData();
-
-          formData.append('data', file, 'assemble_web_' + file.name);
-          formData.append('token', accessToken);
-
-          const options = {
-            method: 'POST',
-            body: formData,
-            // If you add this, upload won't work
-            // headers: {
-            //   'Content-Type': 'multipart/form-data',
-            // }
-          };
-          await fetch('https://a9bc-73-25-196-61.ngrok.io/users', {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            }
-          })
-          fetch('https://api.yodacode.xyz/assemble/vaccines', options).then(res => res.text()).then(text => {
-            if (text == 'OK') {
-              setStatus('uploaded');
-            } else {
-              setStatus('error');
-            }
-          }).catch(() => {
-            setStatus('error');
-          });
-
-
-
-
-        }} />
-
-        <p>
-          <a href="javascript:void 0;" style={{ color: '#fa4639' }}>
-            Continue
-          </a>
-          {' | '}
-          <a href="/" style={{ color: '#fa4639' }}>
-            Restart
-          </a>
-        </p>
-
-      </main>}
-
-      {status == 'unauthed' && <Box bg="blue" py={3}><Container variant="copy" bg="white" >
-      <Heading as="h1" mb={3}>
+      {status == 'unauthed' && <Box bg="blue" py={3} sx={{ minHeight: '100vh' }}><Container py={3} variant="copy" bg="white" sx={{ borderRadius: 4 }}>
+        <Heading as="h1" mb={3}>
           Assemble Preflight & Ticketing
         </Heading>
         <Box bg="red" p={3} mb={3} sx={{ borderRadius: 3, color: 'white' }}>
           👋 Hey there! We're super excited to be hosting you in San Francisco for
           Assemble 2022. Use this portal, or it's associated iOS app, to upload
-          your proof of vaccination and your negative COVID-19 test (opens nearer 
-          to the event). After both have been verified, you will be provided a ticket 
-          with a barcode. Please screenshot this barcode or add it to Apple/Google Wallet 
-          and then present it at the front door during checkin.
+          your proof of vaccination and your negative COVID-19 test (opens nearer
+          to the event). After both have been verified, you will be provided a ticket
+          with a barcode. Please screenshot this barcode or add it to Apple/Google Wallet
+          and then present it at the front door during checkin. {JSON.stringify(userData)}
         </Box>
         <div>
           <Box bg="sunken" p={3} mb={3} as="a" href="/login" style={{ display: 'block', borderRadius: 3 }}>
@@ -190,15 +154,11 @@ export default function Home() {
 
       {(status == 'loading' || (
         status == 'authed' && Object.keys(userData).length == 0
-      )) && <main>
-          <h1>
-            Assemble Preflight
-          </h1>
-
-          <div>
-            Please wait...
-          </div>
-        </main>}
+      )) && <Box bg="blue" py={3} sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Heading sx={{color: 'white'}}>
+            Loading, please wait...
+          </Heading>
+        </Box>}
     </div>
   )
 }
