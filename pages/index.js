@@ -20,6 +20,7 @@ export default function Home() {
   const [userData, setUserData] = useState({});
   const [greeting, setGreeting] = useState('Hello');
   const [cardType, setCardType] = useState('');
+  const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
   useEffect(() => {
     (async () => {
@@ -73,12 +74,14 @@ export default function Home() {
             display: 'block', borderRadius: 3, fontWeight: 400, cursor: (
               userData.vaccinationData?.status == "humanReviewRequired"
               || userData.vaccinationData?.status == "verifiedWithDiscrepancy"
-              || userData.vaccinationData?.status == "verified") ? 'default' : 'pointer'
+              || userData.vaccinationData?.status == "verified"
+              || loading) ? 'default' : 'pointer'
           }} href="javascript:void 0;" onClick={() => {
             if (
              userData.vaccinationData?.status == "humanReviewRequired"
               || userData.vaccinationData?.status == "verifiedWithDiscrepancy"
               || userData.vaccinationData?.status == "verified"
+              || loading 
             ) {
               return
             }
@@ -86,7 +89,7 @@ export default function Home() {
               document.getElementById("fileinput").click()
             }
           }}>
-            <Heading>{statusTranslator[userData.vaccinationData?.status] || <>Upload Proof of Vaccination <span className="arrow">&rarr;</span></>}</Heading>
+            <Heading>{loading ? 'Loading...' : (statusTranslator[userData.vaccinationData?.status] || <>Upload Proof of Vaccination <span className="arrow">&rarr;</span></>)}</Heading>
           </Box>
           <Box bg="orange" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800, opacity: 0.5 }}>Required: Negative ART Test</Box>
           <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400, opacity: 0.5 }}>
@@ -107,6 +110,7 @@ export default function Home() {
                 Authorization: `Bearer ${accessToken}`,
               }
             })
+            setLoading(true)
             fetch('https://api.yodacode.xyz/assemble/vaccines', options).then(res => res.text()).then(text => {
               if (text == 'OK') {
                 setStatus('uploaded');
