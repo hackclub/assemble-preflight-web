@@ -5,6 +5,7 @@ import getCookie from '../lib/cookie.js'
 import { useState, useEffect } from 'react'
 import qr from 'jsqr'
 import { Box, Container, Heading, Grid, Input, Button } from 'theme-ui'
+import { useRouter } from 'next/router'
 
 let statusTranslator = {
   'verified': 'Vaccination verified!',
@@ -22,6 +23,7 @@ export default function Home() {
   const [cardType, setCardType] = useState('');
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
+  const router = useRouter()
   useEffect(() => {
     (async () => {
       let cookie = await fetch('/api/token').then(res => res.text());
@@ -113,7 +115,7 @@ export default function Home() {
             setLoading(true)
             fetch('https://api.yodacode.xyz/assemble/vaccines', options).then(res => res.text()).then(text => {
               if (text == 'OK') {
-                setStatus('uploaded');
+                router.reload()
               } else {
                 setStatus('error');
               }
