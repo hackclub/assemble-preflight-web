@@ -17,11 +17,15 @@ a {
 
 .card .arrow {
   transition: 0.2s all;
-  transform: translateX(0px);
+  position: relative;
+  top: 0px;
+  left: 0px;
 }
 
 .card:hover .arrow {
-  transform: translateX(20px);
+  position: relative;
+  top: 0px;
+  left: 8px;
 }
 
 .card {
@@ -29,5 +33,5 @@ a {
 }
 
 .card:hover {
-  background-color: #b0c4e0;
+  background-color: #c1d1e7;
 }
