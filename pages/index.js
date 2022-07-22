@@ -69,10 +69,10 @@ export default function Home() {
           and then present it at the front door during checkin. {JSON.stringify(userData)}
         </Box>
         <Box bg="green" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800 }}>Required: Full Vaccination Against COVID-19</Box>
-        <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400 }} href="javascript:void 0;" onClick={() => {
+        <Box bg="sunken" className="card" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400 }} href="javascript:void 0;" onClick={() => {
           document.getElementById("fileinput").click()
         }}>
-          <Heading>{statusTranslator[userData.record?.image]}</Heading>
+          <Heading>{statusTranslator[userData.vaccinationData?.status] || <>Upload Proof of Vaccination &rarr;</>}</Heading>
         </Box>
         <Box bg="orange" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800, opacity: 0.5 }}>Required: Negative ART Test</Box>
         <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400, opacity: 0.5 }}>
@@ -149,11 +149,11 @@ export default function Home() {
           and then present it at the front door during checkin.
         </Box>
         <div>
-          <Box bg="sunken" p={3} mb={3} as="a" href="/login" style={{ display: 'block', borderRadius: 3 }}>
+          <Box bg="sunken" className="card" p={3} mb={3} as="a" href="/login" style={{ display: 'block', borderRadius: 3 }}>
             <Heading mb={2}>Web &rarr;</Heading>
             <Box>Sign in to start the preflight & vaccine verification process in your browser.</Box>
           </Box>
-          <Box bg="sunken" p={3} mb={3} as="a" href={process.env.NEXT_PUBLIC_APPSTORE_URL} style={{ display: 'block', bg: 'sunken', borderRadius: 3 }}>
+          <Box bg="sunken" className="card" p={3} mb={3} as="a" href={process.env.NEXT_PUBLIC_APPSTORE_URL} style={{ display: 'block', bg: 'sunken', borderRadius: 3 }}>
             <Heading mb={2}>iOS App &rarr;</Heading>
             <Box>Download the iOS app for preflight, vaccine verification, and real-time event integration.</Box>
           </Box>
