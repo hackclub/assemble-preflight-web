@@ -21,8 +21,9 @@ export default function Login({ loginUrl, error }) {
       <Heading sx={{ color: 'white' }}>
         Redirecting...
       </Heading>
-      <Box>
-        Not working? <a href={loginUrl} style={{ color: '#fa4639' }}>Click here</a> to access it.
+      <br />
+      <Box sx={{ color: 'white' }}>
+        Not working? <a href={loginUrl} style={{ color: '#fff', textDecoration: 'underline' }}>Click here</a> to access it.
       </Box>
       {error && <Box>{error}</Box>}
     </Box>
