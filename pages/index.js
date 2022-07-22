@@ -6,16 +6,6 @@ import { useState, useEffect } from 'react'
 import qr from 'jsqr'
 import { Box, Container, Heading, Grid, Input, Button } from 'theme-ui'
 
-// case verified
-		/// Verification worked but there's some discrepancy a human has to look at (generally a name).
-		case verifiedWithDiscrepancy
-		/// Automatic verification doesn't work (generally the upload was an image).
-		case humanReviewRequired
-		/// No data was uploaded.
-		case noData
-		/// The vaccination record was explicitly denied by a human.
-		case denied
-
 let statusTranslator = {
   'verified': 'Vaccination verified!',
   'verifiedWithDiscrepancy': `We're reviewing your vaccine proof.`,
