@@ -6,6 +6,24 @@ import { useState, useEffect } from 'react'
 import qr from 'jsqr'
 import { Box, Container, Heading, Grid, Input, Button } from 'theme-ui'
 
+// case verified
+		/// Verification worked but there's some discrepancy a human has to look at (generally a name).
+		case verifiedWithDiscrepancy
+		/// Automatic verification doesn't work (generally the upload was an image).
+		case humanReviewRequired
+		/// No data was uploaded.
+		case noData
+		/// The vaccination record was explicitly denied by a human.
+		case denied
+
+let statusTranslator = {
+  'verified': 'Vaccination verified!',
+  'verifiedWithDiscrepancy': `We're reviewing your vaccine proof.`,
+  'humanReviewRequired': `We're reviewing your vaccine proof.`,
+  'denied': <>Your vaccination proof was denied, please upload new proof &rarr;</>,
+  'noData': <>Upload Proof of Vaccination &rarr;</>
+}
+
 export default function Home() {
   const [status, setStatus] = useState('loading');
   const [accessToken, setAccessToken] = useState('');
@@ -19,7 +37,7 @@ export default function Home() {
       if (cookie) {
         setAccessToken(cookie);
         setStatus('authed');
-        setUserData(await fetch('/api/me').then(res => res.json()));
+        setUserData(await fetch('/api/records').then(res => res.json()));
       } else {
         setStatus('unauthed');
       }
@@ -64,7 +82,7 @@ export default function Home() {
         <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400 }} href="javascript:void 0;" onClick={() => {
           document.getElementById("fileinput").click()
         }}>
-          <Heading>Upload Proof of Vaccination &rarr;</Heading>
+          <Heading>{statusTranslator[userData.record?.image]}</Heading>
         </Box>
         <Box bg="orange" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800, opacity: 0.5 }}>Required: Negative ART Test</Box>
         <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400, opacity: 0.5 }}>
