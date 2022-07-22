@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 const toBase64 = file => new Promise((resolve, reject) => {
   const reader = new FileReader();
   reader.readAsDataURL(file);
-  reader.onload = () => resolve(reader.result);
+  reader.onload = () => resolve(reader.result.substring(reader.result.indexOf(',') + 1));
   reader.onerror = error => reject(error);
 });
 
@@ -240,7 +240,7 @@ export default function Home() {
                 fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/vaccinations/image/base64`, options)
                   .then((res) => res.text())
                   .then((text) => {
-                    console.log(text);
+                    alert(text);
                     if (text == "OK") {
                       router.reload();
                     } else {
