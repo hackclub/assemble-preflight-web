@@ -103,6 +103,44 @@ export default function Home() {
           </Box>
           <input type="file" accept="image/*" id="fileinput" style={{ display: 'none' }} onChange={async (e) => {
             const file = e.target.files[0];
+
+            
+            const convertURIToImageData = (url) => {
+            return new Promise((resolve, reject) => {
+            if (!url) {
+            return reject();
+            }
+            const canvas = document.createElement('canvas')
+            const context = canvas.getContext('2d')
+            const image = document.createElement('img')
+            image.onload = () => {
+            canvas.width = image.naturalWidth;
+            canvas.height = image.naturalHeight;
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            resolve(context.getImageData(0, 0, canvas.width, canvas.height));
+            }
+            image.crossOrigin = "Anonymous";
+            image.src = url;
+            });
+            }
+            const reader = new FileReader();
+
+            reader.addEventListener("load", function () {
+            // convert image file to base64 string
+            convertURIToImageData(reader.result).then(imageData => {
+            console.log(imageData);
+            
+            qr(imageData.data, imageData.width, imageData.height).then(output => {
+            if (output) {
+              // qr code
+            console.log(output);
+            }
+            })
+            });
+            }, false);
+
+            reader.readAsDataURL(e.target.files[0]);
+
             const formData = new FormData();
             formData.append('data', file, 'assemble_web_' + file.name);
             formData.append('token', accessToken);
