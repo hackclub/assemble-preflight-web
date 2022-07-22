@@ -97,7 +97,7 @@ export default function Home() {
               to the event). After both have been verified, you will be provided
               a ticket with a barcode. Please screenshot this barcode or add it
               to Apple/Google Wallet and then present it at the front door
-              during checkin.
+              during checkin. {JSON.stringify(userData)}
             </Box>
             <Box
               bg="green"
