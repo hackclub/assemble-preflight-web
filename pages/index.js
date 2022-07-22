@@ -7,6 +7,13 @@ import qr from "jsqr";
 import { Box, Container, Heading, Grid, Input, Button } from "theme-ui";
 import { useRouter } from "next/router";
 
+const toBase64 = file => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(reader.result);
+  reader.onerror = error => reject(error);
+});
+
 let statusTranslator = {
   verified: "Vaccination verified!",
   verifiedWithDiscrepancy: `We're reviewing your vaccine proof.`,
@@ -209,9 +216,16 @@ export default function Home() {
                 formData.append("data", file, "assemble_web_" + file.name);
                 console.log(file)
                 formData.append("token", accessToken);
+                const base64 = await toBase64(file)
                 const options = {
                   method: "POST",
-                  body: formData
+                  body: JSON.stringify({
+                      "mimeType": file.type,
+                      "data": base64
+                  }),
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                  }
                 };
                 await fetch(
                   `https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`,
@@ -223,7 +237,7 @@ export default function Home() {
                   }
                 );
                 setLoading(true);
-                fetch("https://api.yodacode.xyz/assemble/vaccines", options)
+                fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/vaccinations/image/base64`, options)
                   .then((res) => res.text())
                   .then((text) => {
                     console.log(text);
