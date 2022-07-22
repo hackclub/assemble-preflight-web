@@ -10,8 +10,8 @@ let statusTranslator = {
   'verified': 'Vaccination verified!',
   'verifiedWithDiscrepancy': `We're reviewing your vaccine proof.`,
   'humanReviewRequired': `We're reviewing your vaccine proof.`,
-  'denied': <>Your vaccination proof was denied, please upload new proof &rarr;</>,
-  'noData': <>Upload Proof of Vaccination &rarr;</>
+  'denied': <>Your vaccination proof was denied, please upload new proof <span className="arrow">&rarr;</span></>,
+  'noData': <>Upload Proof of Vaccination <span className="arrow">&rarr;</span></>
 }
 
 export default function Home() {
@@ -66,13 +66,13 @@ export default function Home() {
           your proof of vaccination and your negative COVID-19 test (option will become available nearer
           to the event). After both have been verified, you will be provided a ticket
           with a barcode. Please screenshot this barcode or add it to Apple/Google Wallet
-          and then present it at the front door during checkin. {JSON.stringify(userData)}
+          and then present it at the front door during checkin.
         </Box>
         <Box bg="green" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800 }}>Required: Full Vaccination Against COVID-19</Box>
         <Box bg="sunken" className="card" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400 }} href="javascript:void 0;" onClick={() => {
           document.getElementById("fileinput").click()
         }}>
-          <Heading>{statusTranslator[userData.vaccinationData?.status] || <>Upload Proof of Vaccination &rarr;</>}</Heading>
+          <Heading>{statusTranslator[userData.vaccinationData?.status] || <>Upload Proof of Vaccination <span className="arrow">&rarr;</span></>}</Heading>
         </Box>
         <Box bg="orange" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800, opacity: 0.5 }}>Required: Negative ART Test</Box>
         <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400, opacity: 0.5 }}>
@@ -119,7 +119,7 @@ export default function Home() {
           <a href="javascript:void 0;" onClick={() => {
             window.location.reload(true);
           }}>
-            <h2>Restart &rarr;</h2>
+            <h2>Restart <span className="arrow">&rarr;</span></h2>
             <p>Restart the vaccine verification process.</p>
           </a>
         </div>
@@ -150,11 +150,11 @@ export default function Home() {
         </Box>
         <div>
           <Box bg="sunken" className="card" p={3} mb={3} as="a" href="/login" style={{ display: 'block', borderRadius: 3 }}>
-            <Heading mb={2}>Web &rarr;</Heading>
+            <Heading mb={2}>Web <span className="arrow">&rarr;</span></Heading>
             <Box>Sign in to start the preflight & vaccine verification process in your browser.</Box>
           </Box>
           <Box bg="sunken" className="card" p={3} mb={3} as="a" href={process.env.NEXT_PUBLIC_APPSTORE_URL} style={{ display: 'block', bg: 'sunken', borderRadius: 3 }}>
-            <Heading mb={2}>iOS App &rarr;</Heading>
+            <Heading mb={2}>iOS App <span className="arrow">&rarr;</span></Heading>
             <Box>Download the iOS app for preflight, vaccine verification, and real-time event integration.</Box>
           </Box>
         </div>
