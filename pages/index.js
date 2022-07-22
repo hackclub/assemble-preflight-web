@@ -71,14 +71,14 @@ export default function Home() {
           <Box bg="green" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800 }}>Required: Full Vaccination Against COVID-19</Box>
           <Box bg="sunken" className="card" p={3} mb={3} as="a" style={{
             display: 'block', borderRadius: 3, fontWeight: 400, cursor: (
-              statusTranslator[userData.vaccinationData?.status] == "humanReviewRequired"
-              || statusTranslator[userData.vaccinationData?.status] == "verifiedWithDiscrepancy"
-              || statusTranslator[userData.vaccinationData?.status] == "verified") ? 'default' : 'pointer'
+              userData.vaccinationData?.status == "humanReviewRequired"
+              || userData.vaccinationData?.status == "verifiedWithDiscrepancy"
+              || userData.vaccinationData?.status == "verified") ? 'default' : 'pointer'
           }} href="javascript:void 0;" onClick={() => {
             if (
-              statusTranslator[userData.vaccinationData?.status] == "humanReviewRequired"
-              || statusTranslator[userData.vaccinationData?.status] == "verifiedWithDiscrepancy"
-              || statusTranslator[userData.vaccinationData?.status] == "verified"
+             userData.vaccinationData?.status == "humanReviewRequired"
+              || userData.vaccinationData?.status == "verifiedWithDiscrepancy"
+              || userData.vaccinationData?.status == "verified"
             ) {
               return
             }
