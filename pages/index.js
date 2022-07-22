@@ -259,15 +259,6 @@ export default function Home() {
                     'Content-Type': 'application/json'
                   }
                 };
-                await fetch(
-                  `https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`,
-                  {
-                    method: "GET",
-                    headers: {
-                      Authorization: `Bearer ${accessToken}`,
-                    },
-                  }
-                );
                 setLoading(true);
                 fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/vaccinations/image/base64`, options)
                   .then((res) => res.json())
@@ -280,7 +271,7 @@ export default function Home() {
                     }
                   })
                   .catch(() => {
-                    setErrorMessageMessage('Unexpected Error Occurred While Uploading Image');
+                    setErrorMessage('Unexpected Error Occurred While Uploading Image');
                     setStatus("error");
                   });
               }}
