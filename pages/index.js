@@ -225,6 +225,7 @@ export default function Home() {
                   }),
                   headers: {
                     Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
                   }
                 };
                 await fetch(
