@@ -147,8 +147,11 @@ export default function Home() {
             const options = {
               method: 'POST',
               body: formData,
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              }
             };
-            await fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`, {
+            fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`, {
               method: 'GET',
               headers: {
                 Authorization: `Bearer ${accessToken}`,
