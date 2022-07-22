@@ -66,7 +66,7 @@ export default function Home() {
           your proof of vaccination and your negative COVID-19 test (option will become available nearer
           to the event). After both have been verified, you will be provided a ticket
           with a barcode. Please screenshot this barcode or add it to Apple/Google Wallet
-          and then present it at the front door during checkin.
+          and then present it at the front door during checkin. {JSON.stringify(userData)}
         </Box>
         <Box bg="green" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800 }}>Required: Full Vaccination Against COVID-19</Box>
         <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400 }} href="javascript:void 0;" onClick={() => {
