@@ -205,43 +205,39 @@ export default function Home() {
               style={{ display: "none" }}
               onChange={async (e) => {
                 const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.addEventListener("load", async function () {
-                  reader.readAsDataURL(e.target.files[0]);
-                  const formData = new FormData();
-                  formData.append("data", file, "assemble_web_" + file.name);
-                  formData.append("token", accessToken);
-                  const options = {
-                    method: "POST",
-                    body: formData,
+                const formData = new FormData();
+                formData.append("data", file, "assemble_web_" + file.name);
+                formData.append("token", accessToken);
+                const options = {
+                  method: "POST",
+                  body: formData,
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                  },
+                };
+                fetch(
+                  `https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`,
+                  {
+                    method: "GET",
                     headers: {
                       Authorization: `Bearer ${accessToken}`,
                     },
-                  };
-                  fetch(
-                    `https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`,
-                    {
-                      method: "GET",
-                      headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                      },
-                    }
-                  );
-                  setLoading(true);
-                  fetch("https://api.yodacode.xyz/assemble/vaccines", options)
-                    .then((res) => res.text())
-                    .then((text) => {
-                      console.log(text);
-                      if (text == "OK") {
-                        router.reload();
-                      } else {
-                        setStatus("error");
-                      }
-                    })
-                    .catch(() => {
+                  }
+                );
+                setLoading(true);
+                fetch("https://api.yodacode.xyz/assemble/vaccines", options)
+                  .then((res) => res.text())
+                  .then((text) => {
+                    console.log(text);
+                    if (text == "OK") {
+                      router.reload();
+                    } else {
                       setStatus("error");
-                    });
-                });
+                    }
+                  })
+                  .catch(() => {
+                    setStatus("error");
+                  });
               }}
             />
           </Container>
