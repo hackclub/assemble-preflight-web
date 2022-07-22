@@ -213,7 +213,7 @@ export default function Home() {
                   method: "POST",
                   body: formData
                 };
-                fetch(
+                await fetch(
                   `https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`,
                   {
                     method: "GET",
