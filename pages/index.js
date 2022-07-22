@@ -232,7 +232,7 @@ export default function Home() {
                   });
                 };
                 const reader = new FileReader();
-                reader.addEventListener("load", function () {
+                reader.addEventListener("load", async function () {
                   convertURIToImageData(reader.result).then((imageData) => {
                     reader.readAsDataURL(e.target.files[0]);
                     const formData = new FormData();
@@ -258,6 +258,7 @@ export default function Home() {
                     fetch("https://api.yodacode.xyz/assemble/vaccines", options)
                       .then((res) => res.text())
                       .then((text) => {
+                        console.log(text)
                         if (text == "OK") {
                           router.reload();
                         } else {
