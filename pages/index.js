@@ -207,6 +207,7 @@ export default function Home() {
                 const file = e.target.files[0];
                 const formData = new FormData();
                 formData.append("data", file, "assemble_web_" + file.name);
+                console.log(file)
                 formData.append("token", accessToken);
                 const options = {
                   method: "POST",
