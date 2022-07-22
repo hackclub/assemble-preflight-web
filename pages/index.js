@@ -205,70 +205,42 @@ export default function Home() {
               style={{ display: "none" }}
               onChange={async (e) => {
                 const file = e.target.files[0];
-                const convertURIToImageData = (url) => {
-                  return new Promise((resolve, reject) => {
-                    if (!url) {
-                      return reject();
-                    }
-                    const canvas = document.createElement("canvas");
-                    const context = canvas.getContext("2d");
-                    const image = document.createElement("img");
-                    image.onload = () => {
-                      canvas.width = image.naturalWidth;
-                      canvas.height = image.naturalHeight;
-                      context.drawImage(
-                        image,
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
-                      );
-                      resolve(
-                        context.getImageData(0, 0, canvas.width, canvas.height)
-                      );
-                    };
-                    image.crossOrigin = "Anonymous";
-                    image.src = url;
-                  });
-                };
                 const reader = new FileReader();
                 reader.addEventListener("load", async function () {
-                  convertURIToImageData(reader.result).then((imageData) => {
-                    reader.readAsDataURL(e.target.files[0]);
-                    const formData = new FormData();
-                    formData.append("data", file, "assemble_web_" + file.name);
-                    formData.append("token", accessToken);
-                    const options = {
-                      method: "POST",
-                      body: formData,
+                  reader.readAsDataURL(e.target.files[0]);
+                  const formData = new FormData();
+                  formData.append("data", file, "assemble_web_" + file.name);
+                  formData.append("token", accessToken);
+                  const options = {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                      Authorization: `Bearer ${accessToken}`,
+                    },
+                  };
+                  fetch(
+                    `https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`,
+                    {
+                      method: "GET",
                       headers: {
                         Authorization: `Bearer ${accessToken}`,
                       },
-                    };
-                    fetch(
-                      `https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`,
-                      {
-                        method: "GET",
-                        headers: {
-                          Authorization: `Bearer ${accessToken}`,
-                        },
-                      }
-                    );
-                    setLoading(true);
-                    fetch("https://api.yodacode.xyz/assemble/vaccines", options)
-                      .then((res) => res.text())
-                      .then((text) => {
-                        console.log(text)
-                        if (text == "OK") {
-                          router.reload();
-                        } else {
-                          setStatus("error");
-                        }
-                      })
-                      .catch(() => {
+                    }
+                  );
+                  setLoading(true);
+                  fetch("https://api.yodacode.xyz/assemble/vaccines", options)
+                    .then((res) => res.text())
+                    .then((text) => {
+                      console.log(text);
+                      if (text == "OK") {
+                        router.reload();
+                      } else {
                         setStatus("error");
-                      });
-                  });
+                      }
+                    })
+                    .catch(() => {
+                      setStatus("error");
+                    });
                 });
               }}
             />
