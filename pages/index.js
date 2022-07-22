@@ -206,6 +206,7 @@ export default function Home() {
                   width: "100%",
                   borderRadius: "3px",
                 }}
+                alt="FYI! HEICs are broken at the moment, fix coming soon!"
               />
             )}
             <Box
