@@ -18,14 +18,14 @@ export default function Login({ loginUrl, error }) {
   }, []);
   return (
     <Box py={3} sx={{ minHeight: '100vh', backgroundImage: 'linear-gradient(90deg, rgba(2,0,36,0.37718837535014005) 0%, rgba(2,0,36,0.36318277310924374) 35%, rgba(2,0,36,0.36878501400560226) 100%), url(https://cloud-2ppyw38ar-hack-club-bot.vercel.app/0golden-bay.png)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundSize: 'cover' }}>
-      <Heading sx={{ color: 'white' }}>
+      <Box><Heading sx={{ color: 'white' }}>
         Redirecting...
       </Heading>
       <br />
       <Box sx={{ color: 'white' }}>
         Not working? <a href={loginUrl} style={{ color: '#fff', textDecoration: 'underline' }}>Click here</a> to access it.
       </Box>
-      {error && <Box>{error}</Box>}
+      {error && <Box>{error}</Box>}</Box>
     </Box>
   )
 }
