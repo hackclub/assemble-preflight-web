@@ -259,7 +259,7 @@ export default function Home() {
                     'Content-Type': 'application/json'
                   }
                 };
-                /*await fetch(
+                await fetch(
                   `https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`,
                   {
                     method: "GET",
@@ -267,7 +267,7 @@ export default function Home() {
                       Authorization: `Bearer ${accessToken}`,
                     },
                   }
-                );*/
+                );
                 setLoading(true);
                 fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/vaccinations/image/base64`, options)
                   .then((res) => res.json())
