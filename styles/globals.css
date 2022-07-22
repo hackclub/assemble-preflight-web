@@ -14,3 +14,20 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.card .arrow {
+  transition: 0.2s all;
+  transform: translateX(0px);
+}
+
+.card:hover .arrow {
+  transform: translateX(20px);
+}
+
+.card {
+  transition: 0.2s all;
+}
+
+.card:hover {
+  background-color: #c0d7f6;
+}

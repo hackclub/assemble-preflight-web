@@ -58,51 +58,62 @@ export default function Home() {
       <canvas id="canvas" width="0" height="0" style={{ display: 'none' }}></canvas>
       {status == 'authed' && <Box py={3} sx={{ minHeight: '100vh', backgroundImage: 'linear-gradient(90deg, rgba(2,0,36,0.37718837535014005) 0%, rgba(2,0,36,0.36318277310924374) 35%, rgba(2,0,36,0.36878501400560226) 100%), url(https://cloud-2ppyw38ar-hack-club-bot.vercel.app/0golden-bay.png)', backgroundSize: 'cover' }}>
         <Container py={3} variant="copy" bg="white" sx={{ borderRadius: 4 }}>
-        <Heading as="h1" mb={3}>
-          Assemble Preflight & Ticketing
-        </Heading>
-        <Box bg="red" p={3} mb={3} sx={{ borderRadius: 3, color: 'white' }}>
-          👋 {userData?.name?.split(' ')?.[0] ? `${greeting}, ${userData?.name?.split(' ')?.[0]}` : greeting}! Please use this portal to upload
-          your proof of vaccination and your negative COVID-19 test (option will become available nearer
-          to the event). After both have been verified, you will be provided a ticket
-          with a barcode. Please screenshot this barcode or add it to Apple/Google Wallet
-          and then present it at the front door during checkin.
-        </Box>
-        <Box bg="green" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800 }}>Required: Full Vaccination Against COVID-19</Box>
-        <Box bg="sunken" className="card" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400 }} href="javascript:void 0;" onClick={() => {
-          document.getElementById("fileinput").click()
-        }}>
-          <Heading>{statusTranslator[userData.vaccinationData?.status] || <>Upload Proof of Vaccination <span className="arrow">&rarr;</span></>}</Heading>
-        </Box>
-        <Box bg="orange" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800, opacity: 0.5 }}>Required: Negative ART Test</Box>
-        <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400, opacity: 0.5 }}>
-          <Heading>Upload Coming Soon...</Heading>
-        </Box>
-        <input type="file" accept="image/*" id="fileinput" style={{display: 'none'}} onChange={async (e) => {
-        const file = e.target.files[0];
-        const formData = new FormData();
-        formData.append('data', file, 'assemble_web_' + file.name);
-        formData.append('token', accessToken);
-        const options = {
-          method: 'POST',
-          body: formData,
-        };
-        await fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          }
-        })
-        fetch('https://api.yodacode.xyz/assemble/vaccines', options).then(res => res.text()).then(text => {
-          if (text == 'OK') {
-            setStatus('uploaded');
-          } else {
-            setStatus('error');
-          }
-        }).catch(() => {
-          setStatus('error');
-        });
-        }} />
+          <Heading as="h1" mb={3}>
+            Assemble Preflight & Ticketing
+          </Heading>
+          <Box bg="red" p={3} mb={3} sx={{ borderRadius: 3, color: 'white' }}>
+            👋 {userData?.name?.split(' ')?.[0] ? `${greeting}, ${userData?.name?.split(' ')?.[0]}` : greeting}! Please use this portal to upload
+            your proof of vaccination and your negative COVID-19 test (option will become available nearer
+            to the event). After both have been verified, you will be provided a ticket
+            with a barcode. Please screenshot this barcode or add it to Apple/Google Wallet
+            and then present it at the front door during checkin.
+          </Box>
+          <Box bg="green" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800 }}>Required: Full Vaccination Against COVID-19</Box>
+          <Box bg="sunken" className="card" p={3} mb={3} as="a" style={{
+            display: 'block', borderRadius: 3, fontWeight: 400, cursor: (statusTranslator[userData.vaccinationData?.status] == "humanReviewRequired"
+              || statusTranslator[userData.vaccinationData?.status].includes('verified')) ? 'default' : 'pointer'
+          }} href="javascript:void 0;" onClick={() => {
+            if (
+              statusTranslator[userData.vaccinationData?.status] == "humanReviewRequired"
+              || statusTranslator[userData.vaccinationData?.status].includes('verified')
+            ) {
+              return
+            }
+            else {
+              document.getElementById("fileinput").click()
+            }
+          }}>
+            <Heading>{statusTranslator[userData.vaccinationData?.status] || <>Upload Proof of Vaccination <span className="arrow">&rarr;</span></>}</Heading>
+          </Box>
+          <Box bg="orange" px={3} py={2} mb={3} sx={{ display: 'block', borderRadius: 3, width: 'fit-content', color: 'white', fontWeight: 800, opacity: 0.5 }}>Required: Negative ART Test</Box>
+          <Box bg="sunken" p={3} mb={3} as="a" style={{ display: 'block', borderRadius: 3, fontWeight: 400, opacity: 0.5 }}>
+            <Heading>Upload Coming Soon...</Heading>
+          </Box>
+          <input type="file" accept="image/*" id="fileinput" style={{ display: 'none' }} onChange={async (e) => {
+            const file = e.target.files[0];
+            const formData = new FormData();
+            formData.append('data', file, 'assemble_web_' + file.name);
+            formData.append('token', accessToken);
+            const options = {
+              method: 'POST',
+              body: formData,
+            };
+            await fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`, {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              }
+            })
+            fetch('https://api.yodacode.xyz/assemble/vaccines', options).then(res => res.text()).then(text => {
+              if (text == 'OK') {
+                setStatus('uploaded');
+              } else {
+                setStatus('error');
+              }
+            }).catch(() => {
+              setStatus('error');
+            });
+          }} />
         </Container>
       </Box>}
 
@@ -163,7 +174,7 @@ export default function Home() {
       {(status == 'loading' || (
         status == 'authed' && Object.keys(userData).length == 0
       )) && <Box py={3} sx={{ minHeight: '100vh', backgroundImage: 'linear-gradient(90deg, rgba(2,0,36,0.37718837535014005) 0%, rgba(2,0,36,0.36318277310924374) 35%, rgba(2,0,36,0.36878501400560226) 100%), url(https://cloud-2ppyw38ar-hack-club-bot.vercel.app/0golden-bay.png)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundSize: 'cover' }}>
-          <Heading sx={{color: 'white'}}>
+          <Heading sx={{ color: 'white' }}>
             Loading, please wait...
           </Heading>
         </Box>}
