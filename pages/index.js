@@ -167,7 +167,7 @@ export default function Home() {
             }).catch(() => {
               setStatus('error');
             });
-          }} />
+          } />
         </Container>
       </Box>}
 
