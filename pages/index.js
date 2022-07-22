@@ -210,10 +210,7 @@ export default function Home() {
                 formData.append("token", accessToken);
                 const options = {
                   method: "POST",
-                  body: formData,
-                  headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                  },
+                  body: formData
                 };
                 fetch(
                   `https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`,
