@@ -72,11 +72,13 @@ export default function Home() {
           <Box bg="sunken" className="card" p={3} mb={3} as="a" style={{
             display: 'block', borderRadius: 3, fontWeight: 400, cursor: (
               statusTranslator[userData.vaccinationData?.status] == "humanReviewRequired"
-              || statusTranslator[userData.vaccinationData?.status]?.includes('verified')) ? 'default' : 'pointer'
+              || statusTranslator[userData.vaccinationData?.status] == "verifiedWithDiscrepancy"
+              || statusTranslator[userData.vaccinationData?.status] == "verified") ? 'default' : 'pointer'
           }} href="javascript:void 0;" onClick={() => {
             if (
               statusTranslator[userData.vaccinationData?.status] == "humanReviewRequired"
-              || statusTranslator[userData.vaccinationData?.status]?.includes('verified')
+              || statusTranslator[userData.vaccinationData?.status] == "verifiedWithDiscrepancy"
+              || statusTranslator[userData.vaccinationData?.status] == "verified"
             ) {
               return
             }
