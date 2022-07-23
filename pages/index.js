@@ -16,7 +16,7 @@ const toBase64 = file => new Promise((resolve, reject) => {
 
 let statusMessageTranslator = {
   verified: "Your proof of vaccination has been verified!",
-  verifiedWithDiscrepancy: `We're reviewing your proof of vaccination.`,
+  verifiedWithDiscrepancy: `Your vaccine card is valid, but there is a discrepancy we'll manually review.`,
   humanReviewRequired: `We're reviewing your proof of vaccination.`,
   denied: `Your vaccination proof was denied, please upload new proof`,
   noData: `Please upload proof of vaccination.`,
@@ -55,6 +55,71 @@ let statusButtonTranslator = {
   )
 }
 
+async function qrCodeScan (file) {
+  const promise = new Promise((resolveScanned) => {
+    let resolved = false;
+
+  const convertURIToImageData = (url) => {
+    return new Promise((resolve, reject) => {
+    if (!url) {
+    return reject();
+    }
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    const image = document.createElement('img')
+    image.onload = () => {
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    resolve(context.getImageData(0, 0, canvas.width, canvas.height));
+    }
+    image.crossOrigin = "Anonymous";
+    image.src = url;
+    });
+    }
+    const reader = new FileReader();
+
+    reader.addEventListener("load", function () {
+    // convert image file to base64 string
+    convertURIToImageData(reader.result).then(imageData => {
+    console.log(imageData);
+
+    let output = qr(imageData.data, imageData.width, imageData.height);
+    console.log(output);
+    if (output) {
+      if (output?.data?.startsWith('shc:/') && !resolved) {
+        resolveScanned({
+          valid: true,
+          type: output?.version,
+          data: output?.data
+        });
+        resolved = true;
+        return
+      }
+      // qr code
+    }
+    })
+    
+    }, false);
+
+    reader.readAsDataURL(file);
+setTimeout(() => {
+  if (!resolved) {
+    resolveScanned({
+      valid: false
+    });
+    resolved = true;
+  }
+}, 3000);
+    
+  });
+  try {
+    const output = await promise;
+    return output;
+  } catch (err) {
+    return {valid:false}
+  }
+}
 
 export default function Home() {
   const [status, setStatus] = useState("loading");
@@ -223,7 +288,7 @@ export default function Home() {
                 opacity: 0.5,
               }}
             >
-              Required: Negative ART Test
+              Required: Negative COVID Test
             </Box>
             <Box
               bg="sunken"
@@ -246,6 +311,27 @@ export default function Home() {
               style={{ display: "none" }}
               onChange={async (e) => {
                 const file = e.target.files[0];
+
+                try {
+                  const qrData = await qrCodeScan(file);
+                  if (qrData.valid) {
+                    console.log(qrData);
+                    const resp = await fetch('/api/verified', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        qr: qrData.data
+                      })
+                    }).then(resp => resp.json());
+                    if (resp.error) return;
+                    router.reload();
+                  } else {
+                    console.log('invalid', qrData);
+                  }
+                } catch (err) {}
+
                 const formData = new FormData();
                 formData.append("data", file, "assemble_web_" + file.name);
                 console.log(file)
@@ -366,10 +452,10 @@ export default function Home() {
                 mb={3}
                 as="a"
                 href={process.env.NEXT_PUBLIC_APPSTORE_URL}
-                style={{ display: "block", bg: "sunken", borderRadius: 3 }}
+                style={{ display: "block", bg: "sunken", borderRadius: 3, opacity: 0.5 }}
               >
                 <Heading mb={2}>
-                  iOS App <span className="arrow">&rarr;</span>
+                iOS App (coming soon) <span className="arrow">&rarr;</span>
                 </Heading>
                 <Box>
                   Download the iOS app for preflight, vaccine verification, and
