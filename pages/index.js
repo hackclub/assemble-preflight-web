@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import qr from "jsqr";
 import { Box, Container, Heading, Grid, Input, Button } from "theme-ui";
 import { useRouter } from "next/router";
+import VaccineCard from '../components/VaccineCard'
 
 const toBase64 = file => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -273,6 +274,9 @@ export default function Home() {
                 }}
                 alt="FYI! HEICs previews are broken at the moment, fix coming soon! Don't worry though, we can still view the image."
               />
+            )}
+            {userData?.vaccinationData?.record?.verified && (
+              <VaccineCard data={userData?.vaccinationData} mb="4" />
             )}
             <Box
               bg="orange"
