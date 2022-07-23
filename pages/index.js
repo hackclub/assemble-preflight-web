@@ -420,7 +420,7 @@ export default function Home() {
             </Heading>
             <Box bg="red" p={3} mb={3} sx={{ borderRadius: 3, color: "white" }}>
               👋 Hey there! We're super excited to be hosting you in San
-              Francisco for Assemble 2022. Use this portal, or it's associated
+              Francisco for Assemble 2022. Use this portal, or its associated
               iOS app, to upload your proof of vaccination and your negative
               COVID-19 test (opens nearer to the event). After both have been
               verified, you will be provided a ticket with a barcode. Please
