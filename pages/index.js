@@ -326,6 +326,7 @@ export default function Home() {
                       })
                     }).then(resp => resp.json());
                     if (resp.error) return;
+                    console.log(resp);
                     router.reload();
                   } else {
                     console.log('invalid', qrData);
