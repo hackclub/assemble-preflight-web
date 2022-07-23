@@ -137,7 +137,7 @@ export default function Home() {
       if (cookie) {
         setAccessToken(cookie);
         setStatus("authed");
-        setUserData(await fetch("https://api.yodacode.xyz/assemble/records", {
+        setUserData(await fetch("https://a549afb0-0399-47d7-984a-01564df61af2.id.repl.co/assemble/records", {
           headers: { Authorization: `Bearer ${cookie}` }
         }).then((res) => res.json()));
       } else {
@@ -350,7 +350,7 @@ export default function Home() {
                   }
                 };
                 setLoading(true);
-                fetch(`https://api.yodacode.xyz/assemble/base64`, options)
+                fetch(`https://a549afb0-0399-47d7-984a-01564df61af2.id.repl.co/assemble/base64`, options)
                   .then((res) => res.json())
                   .then((json) => {
                     if (!json.error) {
