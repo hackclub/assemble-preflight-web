@@ -451,11 +451,11 @@ export default function Home() {
                 p={3}
                 mb={3}
                 as="a"
-                href={process.env.NEXT_PUBLIC_APPSTORE_URL}
+                // href={process.env.NEXT_PUBLIC_APPSTORE_URL}
                 style={{ display: "block", bg: "sunken", borderRadius: 3, opacity: 0.5 }}
               >
                 <Heading mb={2}>
-                iOS App (coming soon) <span className="arrow">&rarr;</span>
+                  iOS App (coming soon) <span className="arrow">&rarr;</span>
                 </Heading>
                 <Box>
                   Download the iOS app for preflight, vaccine verification, and
