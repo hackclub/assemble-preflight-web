@@ -138,7 +138,7 @@ export default function Home() {
       if (cookie) {
         setAccessToken(cookie);
         setStatus("authed");
-        setUserData(await fetch("https://a549afb0-0399-47d7-984a-01564df61af2.id.repl.co/assemble/records", {
+        setUserData(await fetch("https://api.ticketing.assemble.hackclub.com/users", {
           headers: { Authorization: `Bearer ${cookie}` }
         }).then((res) => res.json()));
       } else {
@@ -354,7 +354,7 @@ export default function Home() {
                   }
                 };
                 setLoading(true);
-                fetch(`https://a549afb0-0399-47d7-984a-01564df61af2.id.repl.co/assemble/base64`, options)
+                fetch(`https://api.ticketing.assemble.hackclub.com/vaccinations/image/base64`, options)
                   .then((res) => res.json())
                   .then((json) => {
                     if (!json.error) {
