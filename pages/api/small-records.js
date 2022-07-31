@@ -12,5 +12,6 @@ export default async function (req, res) {
         }
     }).then(response => response.json());
     if (response.reason == "AccessToken not authenticated.") response.reauth = true;
+    if (response.reason == 'malformed JWT') response.reauth = true;
     res.json(response);
 }
