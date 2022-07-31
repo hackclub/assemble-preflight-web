@@ -14,6 +14,11 @@ const nextConfig = {
         destination: 'https://id.assemble.hackclub.com/set/:path',
         permanent: true,
       },
+      {
+        source: '/signout',
+        destination: '/api/signout',
+        permanent: false
+      }
     ]
   },
 }

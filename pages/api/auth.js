@@ -17,7 +17,14 @@ export default async function (req, res) {
     cookies.set('assemble_access_token', response.access_token, {
       overwrite: true,
       expires: new Date(Date.now() + sevenDaysInMs),
+      httpOnly: true
     });
+    cookies.set('hackclub-ticketing-auth', response.access_token, {
+      overwrite: true,
+      expires: new Date(Date.now() + sevenDaysInMs),
+      httpOnly: true,
+      domain: '.assemble.hackclub.com'
+    }); // this is quite redundant but it's a pain to sync assemble_access_token -> hackclub-ticketing-auth
     res.redirect('/');
 }
 

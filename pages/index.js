@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
-import getCookie from "../lib/cookie.js";
 import { useState, useEffect } from "react";
 import qr from "jsqr";
 import { Box, Container, Heading, Grid, Input, Button } from "theme-ui";
@@ -124,27 +123,27 @@ setTimeout(() => {
 
 export default function Home() {
   const [status, setStatus] = useState("loading");
-  const [accessToken, setAccessToken] = useState("");
   const [userData, setUserData] = useState({});
   const [greeting, setGreeting] = useState("Hello");
-  const [cardType, setCardType] = useState("");
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState(null);
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState('');
   useEffect(() => {
     (async () => {
-      let cookie = await fetch("/api/token").then((res) => res.text());
-      if (cookie) {
-        setAccessToken(cookie);
+      let isAuthed = await fetch("/api/get-auth-state").then((res) => res.text());
+      if (isAuthed == 'TRUE') {
         setStatus("authed");
-        setUserData(await fetch("https://api.ticketing.assemble.hackclub.com/users", {
-          headers: { Authorization: `Bearer ${cookie}` }
-        }).then((res) => res.json()));
+        const userDataResponse = await fetch("/api/small-records").then((res) => res.json());
+        console.log({ userDataResponse })
+        if (userDataResponse.reauth) {
+          console.log('Received reauth request from server. This typically means api.ticketing.assemble.hackclub.com has rejected the current token.');
+          return setStatus('unauthed');
+        }
+        userDataResponse.vaccinationData = await fetch("https://api.ticketing.assemble.hackclub.com/vaccinations").then((res) => res.json());
+        setUserData(userDataResponse);
       } else {
         setStatus("unauthed");
       }
-      console.log(qr);
     })();
 
     let myDate = new Date();
@@ -337,10 +336,6 @@ export default function Home() {
                   }
                 } catch (err) {}
 
-                const formData = new FormData();
-                formData.append("data", file, "assemble_web_" + file.name);
-                console.log(file)
-                formData.append("token", accessToken);
                 const base64 = await toBase64(file)
                 const options = {
                   method: "POST",
@@ -349,7 +344,6 @@ export default function Home() {
                       "data": base64
                   }),
                   headers: {
-                    Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                   }
                 };
