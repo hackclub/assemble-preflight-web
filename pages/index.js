@@ -138,9 +138,7 @@ export default function Home() {
       if (cookie) {
         setAccessToken(cookie);
         setStatus("authed");
-        setUserData(await fetch("https://api.ticketing.assemble.hackclub.com/users", {
-          headers: { Authorization: `Bearer ${cookie}` }
-        }).then((res) => res.json()));
+        setUserData(await fetch("https://api.ticketing.assemble.hackclub.com/users").then((res) => res.json()));
       } else {
         setStatus("unauthed");
       }
@@ -349,7 +347,6 @@ export default function Home() {
                       "data": base64
                   }),
                   headers: {
-                    Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                   }
                 };
