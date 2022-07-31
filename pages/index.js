@@ -124,19 +124,15 @@ setTimeout(() => {
 
 export default function Home() {
   const [status, setStatus] = useState("loading");
-  const [accessToken, setAccessToken] = useState("");
   const [userData, setUserData] = useState({});
   const [greeting, setGreeting] = useState("Hello");
-  const [cardType, setCardType] = useState("");
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState(null);
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState('');
   useEffect(() => {
     (async () => {
-      let cookie = await fetch("/api/token").then((res) => res.text());
-      if (cookie) {
-        setAccessToken(cookie);
+      let isAuthed = await fetch("/api/get-auth-state").then((res) => res.text());
+      if (isAuthed == 'TRUE') {
         setStatus("authed");
         setUserData(await fetch("/api/small-records").then((res) => res.json()));
         userData.vaccinationData = await fetch("https://api.ticketing.assemble.hackclub.com/vaccinations").then((res) => res.json());
