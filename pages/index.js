@@ -382,7 +382,7 @@ export default function Home() {
             <a
               href="javascript:void 0;"
               onClick={() => {
-                window.location.reload(true);
+                window.location.replace('/signout');
               }}
             >
               <h2>
