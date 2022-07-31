@@ -139,7 +139,7 @@ export default function Home() {
           console.log('Received reauth request from server. This typically means api.ticketing.assemble.hackclub.com has rejected the current token.');
           return setStatus('unauthed');
         }
-        userDataResponse.vaccinationData = await fetch("https://api.ticketing.assemble.hackclub.com/vaccinations").then((res) => res.json());
+        userDataResponse.vaccinationData = await fetch("https://api.ticketing.assemble.hackclub.com/vaccinations", { credentials: 'include' }).then((res) => res.json());
         setUserData(userDataResponse);
       } else {
         setStatus("unauthed");
@@ -326,7 +326,8 @@ export default function Home() {
                       },
                       body: JSON.stringify({
                         qr: qrData.data
-                      })
+                      }),
+                      credentials: 'include'
                     }).then(resp => resp.json());
                     if (resp.error) return;
                     console.log(resp);
@@ -345,7 +346,8 @@ export default function Home() {
                   }),
                   headers: {
                     'Content-Type': 'application/json'
-                  }
+                  },
+                  credentials: 'include'
                 };
                 setLoading(true);
                 fetch(`https://api.ticketing.assemble.hackclub.com/vaccinations/image/base64`, options)
