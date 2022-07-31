@@ -24,6 +24,6 @@ export default async function (req, res) {
       expires: new Date(Date.now() + sevenDaysInMs),
       httpOnly: true,
       domain: '.assemble.hackclub.com'
-    });
+    }); // this is quite redundant but it's a pain to sync assemble_access_token -> hackclub-ticketing-auth
     res.redirect('/');
 }
