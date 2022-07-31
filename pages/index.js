@@ -133,13 +133,14 @@ export default function Home() {
       let isAuthed = await fetch("/api/get-auth-state").then((res) => res.text());
       if (isAuthed == 'TRUE') {
         setStatus("authed");
-        setUserData(await fetch("/api/small-records").then((res) => res.json()));
-        if (userData.reauth) {
+        const userDataResponse = await fetch("/api/small-records").then((res) => res.json());
+        console.log({ userDataResponse })
+        if (userDataResponse.reauth) {
           console.log('Received reauth request from server. This typically means api.ticketing.assemble.hackclub.com has rejected the current token.');
           return setStatus('unauthed');
         }
-        userData.vaccinationData = await fetch("https://api.ticketing.assemble.hackclub.com/vaccinations").then((res) => res.json());
-        setUserData(userData);
+        userDataResponse.vaccinationData = await fetch("https://api.ticketing.assemble.hackclub.com/vaccinations").then((res) => res.json());
+        setUserData(userDataResponse);
       } else {
         setStatus("unauthed");
       }
