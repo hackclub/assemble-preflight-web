@@ -22,7 +22,7 @@ export default async function (req, res) {
       overwrite: true,
       expires: new Date(Date.now() + sevenDaysInMs),
       httpOnly: true,
-      domain: '.hackclub.com'
+      domain: '.assemble.hackclub.com'
     });
     res.redirect('/');
 }
