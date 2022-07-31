@@ -138,7 +138,9 @@ export default function Home() {
       if (cookie) {
         setAccessToken(cookie);
         setStatus("authed");
-        setUserData(await fetch("https://api.ticketing.assemble.hackclub.com/users").then((res) => res.json()));
+        setUserData(await fetch("/api/small-records").then((res) => res.json()));
+        userData.vaccinationData = await fetch("https://api.ticketing.assemble.hackclub.com/vaccinations").then((res) => res.json());
+        setUserData(userData);
       } else {
         setStatus("unauthed");
       }
@@ -335,11 +337,6 @@ export default function Home() {
                   }
                 } catch (err) {}
 
-                const formData = new FormData();
-                formData.append("data", file, "assemble_web_" + file.name);
-                console.log(file)
-                formData.append("token", accessToken);
-                const base64 = await toBase64(file)
                 const options = {
                   method: "POST",
                   body: JSON.stringify({
