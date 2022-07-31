@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
-import getCookie from "../lib/cookie.js";
 import { useState, useEffect } from "react";
 import qr from "jsqr";
 import { Box, Container, Heading, Grid, Input, Button } from "theme-ui";
@@ -135,12 +134,15 @@ export default function Home() {
       if (isAuthed == 'TRUE') {
         setStatus("authed");
         setUserData(await fetch("/api/small-records").then((res) => res.json()));
+        if (userData.reauth) {
+          console.log('Received reauth request from server. This typically means api.ticketing.assemble.hackclub.com has rejected the current token.');
+          return setStatus('unauthed');
+        }
         userData.vaccinationData = await fetch("https://api.ticketing.assemble.hackclub.com/vaccinations").then((res) => res.json());
         setUserData(userData);
       } else {
         setStatus("unauthed");
       }
-      console.log(qr);
     })();
 
     let myDate = new Date();

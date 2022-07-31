@@ -16,7 +16,8 @@ export default async function (req, res) {
     const sevenDaysInMs = 60 * 60 * 1000 * 24 * 7;
     cookies.set('assemble_access_token', response.access_token, {
       overwrite: true,
-      expires: new Date(Date.now() + sevenDaysInMs)
+      expires: new Date(Date.now() + sevenDaysInMs),
+      httpOnly: true
     });
     cookies.set('hackclub-ticketing-auth', response.access_token, {
       overwrite: true,
