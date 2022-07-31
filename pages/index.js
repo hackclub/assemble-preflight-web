@@ -5,14 +5,16 @@ import { useState, useEffect } from "react";
 import qr from "jsqr";
 import { Box, Container, Heading, Grid, Input, Button } from "theme-ui";
 import { useRouter } from "next/router";
-import VaccineCard from '../components/VaccineCard'
+import VaccineCard from "../components/VaccineCard";
 
-const toBase64 = file => new Promise((resolve, reject) => {
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = () => resolve(reader.result.substring(reader.result.indexOf(',') + 1));
-  reader.onerror = error => reject(error);
-});
+const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () =>
+      resolve(reader.result.substring(reader.result.indexOf(",") + 1));
+    reader.onerror = (error) => reject(error);
+  });
 
 let statusMessageTranslator = {
   verified: "Your proof of vaccination has been verified!",
@@ -20,104 +22,101 @@ let statusMessageTranslator = {
   humanReviewRequired: `We're reviewing your proof of vaccination.`,
   denied: `Your vaccination proof was denied, please upload new proof`,
   noData: `Please upload proof of vaccination.`,
-}
+};
 
 let statusButtonTranslator = {
   verified: (
     <>
-      Re-upload proof{" "}
-      <span className="arrow">&rarr;</span>
+      Re-upload proof <span className="arrow">&rarr;</span>
     </>
   ),
   verifiedWithDiscrepancy: (
     <>
-      Re-upload proof{" "}
-      <span className="arrow">&rarr;</span>
+      Re-upload proof <span className="arrow">&rarr;</span>
     </>
   ),
   verified: (
     <>
-      Re-upload proof{" "}
-      <span className="arrow">&rarr;</span>
+      Re-upload proof <span className="arrow">&rarr;</span>
     </>
   ),
   denied: (
     <>
-      Re-upload proof{" "}
-      <span className="arrow">&rarr;</span>
+      Re-upload proof <span className="arrow">&rarr;</span>
     </>
   ),
   noData: (
     <>
-      Upload proof{" "}
-      <span className="arrow">&rarr;</span>
+      Upload proof <span className="arrow">&rarr;</span>
     </>
-  )
-}
+  ),
+};
 
-async function qrCodeScan (file) {
+async function qrCodeScan(file) {
   const promise = new Promise((resolveScanned) => {
     let resolved = false;
 
-  const convertURIToImageData = (url) => {
-    return new Promise((resolve, reject) => {
-    if (!url) {
-    return reject();
-    }
-    const canvas = document.createElement('canvas')
-    const context = canvas.getContext('2d')
-    const image = document.createElement('img')
-    image.onload = () => {
-    canvas.width = image.naturalWidth;
-    canvas.height = image.naturalHeight;
-    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    resolve(context.getImageData(0, 0, canvas.width, canvas.height));
-    }
-    image.crossOrigin = "Anonymous";
-    image.src = url;
-    });
-    }
+    const convertURIToImageData = (url) => {
+      return new Promise((resolve, reject) => {
+        if (!url) {
+          return reject();
+        }
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        const image = document.createElement("img");
+        image.onload = () => {
+          canvas.width = image.naturalWidth;
+          canvas.height = image.naturalHeight;
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          resolve(context.getImageData(0, 0, canvas.width, canvas.height));
+        };
+        image.crossOrigin = "Anonymous";
+        image.src = url;
+      });
+    };
     const reader = new FileReader();
 
-    reader.addEventListener("load", function () {
-    // convert image file to base64 string
-    convertURIToImageData(reader.result).then(imageData => {
-    console.log(imageData);
+    reader.addEventListener(
+      "load",
+      function () {
+        // convert image file to base64 string
+        convertURIToImageData(reader.result).then((imageData) => {
+          console.log(imageData);
 
-    let output = qr(imageData.data, imageData.width, imageData.height);
-    console.log(output);
-    if (output) {
-      if (output?.data?.startsWith('shc:/') && !resolved) {
-        resolveScanned({
-          valid: true,
-          type: output?.version,
-          data: output?.data
+          let output = qr(imageData.data, imageData.width, imageData.height);
+          console.log(output);
+          if (output) {
+            if (output?.data?.startsWith("shc:/") && !resolved) {
+              resolveScanned({
+                valid: true,
+                type: output?.version,
+                data: output?.data,
+              });
+              resolved = true;
+              return;
+            }
+            // qr code
+          }
         });
-        resolved = true;
-        return
-      }
-      // qr code
-    }
-    })
-    
-    }, false);
+      },
+      false
+    );
 
     reader.readAsDataURL(file);
-setTimeout(() => {
-  if (!resolved) {
-    resolveScanned({
-      valid: false
-    });
-    resolved = true;
-  }
-}, 3000);
-    
+    setTimeout(() => {
+      if (!resolved) {
+        resolveScanned({
+          valid: false,
+        });
+        resolved = true;
+      }
+    }, 3000);
   });
   try {
     const output = await promise;
     return output;
   } catch (err) {
-    return {valid:false}
+    return { valid: false };
   }
 }
 
@@ -127,19 +126,28 @@ export default function Home() {
   const [greeting, setGreeting] = useState("Hello");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   useEffect(() => {
     (async () => {
-      let isAuthed = await fetch("/api/get-auth-state").then((res) => res.text());
-      if (isAuthed == 'TRUE') {
+      let isAuthed = await fetch("/api/get-auth-state").then((res) =>
+        res.text()
+      );
+      if (isAuthed == "TRUE") {
         setStatus("authed");
-        const userDataResponse = await fetch("/api/small-records").then((res) => res.json());
-        console.log({ userDataResponse })
+        const userDataResponse = await fetch("/api/small-records").then((res) =>
+          res.json()
+        );
+        console.log({ userDataResponse });
         if (userDataResponse.reauth) {
-          console.log('Received reauth request from server. This typically means api.ticketing.assemble.hackclub.com has rejected the current token.');
-          return setStatus('unauthed');
+          console.log(
+            "Received reauth request from server. This typically means api.ticketing.assemble.hackclub.com has rejected the current token."
+          );
+          return setStatus("unauthed");
         }
-        userDataResponse.vaccinationData = await fetch("https://api.ticketing.assemble.hackclub.com/vaccinations", { credentials: 'include' }).then((res) => res.json());
+        userDataResponse.vaccinationData = await fetch(
+          "https://api.ticketing.assemble.hackclub.com/vaccinations",
+          { credentials: "include" }
+        ).then((res) => res.json());
         setUserData(userDataResponse);
       } else {
         setStatus("unauthed");
@@ -233,9 +241,9 @@ export default function Home() {
                   //   "verifiedWithDiscrepancy" ||
                   // userData.vaccinationData?.status == "verified" ||
                   // loading
-                    // ? "default"
-                    // : "pointer",
-                  'pointer'
+                  // ? "default"
+                  // : "pointer",
+                  "pointer",
               }}
               href="javascript:void 0;"
               onClick={() => {
@@ -253,10 +261,12 @@ export default function Home() {
                 }
               }}
             >
-              <Heading variant="lead" my={0} style={{ lineHeight: '0px' }}>
+              <Heading variant="lead" my={0} style={{ lineHeight: "0px" }}>
                 {loading
                   ? "Loading..."
-                  : statusButtonTranslator[userData.vaccinationData?.status] || (
+                  : statusButtonTranslator[
+                      userData.vaccinationData?.status
+                    ] || (
                       <>
                         Upload Proof of Vaccination{" "}
                         <span className="arrow">&rarr;</span>
@@ -319,38 +329,41 @@ export default function Home() {
                   const qrData = await qrCodeScan(file);
                   if (qrData.valid) {
                     console.log(qrData);
-                    const resp = await fetch('/api/verified', {
-                      method: 'POST',
+                    const resp = await fetch("/api/verified", {
+                      method: "POST",
                       headers: {
-                        'Content-Type': 'application/json'
+                        "Content-Type": "application/json",
                       },
                       body: JSON.stringify({
-                        qr: qrData.data
+                        qr: qrData.data,
                       }),
-                      credentials: 'include'
-                    }).then(resp => resp.json());
+                      credentials: "include",
+                    }).then((resp) => resp.json());
                     if (resp.error) return;
                     console.log(resp);
                     router.reload();
                   } else {
-                    console.log('invalid', qrData);
+                    console.log("invalid", qrData);
                   }
                 } catch (err) {}
 
-                const base64 = await toBase64(file)
+                const base64 = await toBase64(file);
                 const options = {
                   method: "POST",
                   body: JSON.stringify({
-                      "mimeType": file.type,
-                      "data": base64
+                    mimeType: file.type,
+                    data: base64,
                   }),
                   headers: {
-                    'Content-Type': 'application/json'
+                    "Content-Type": "application/json",
                   },
-                  credentials: 'include'
+                  credentials: "include",
                 };
                 setLoading(true);
-                fetch(`https://api.ticketing.assemble.hackclub.com/vaccinations/image/base64`, options)
+                fetch(
+                  `https://api.ticketing.assemble.hackclub.com/vaccinations/image/base64`,
+                  options
+                )
                   .then((res) => res.json())
                   .then((json) => {
                     if (!json.error) {
@@ -361,7 +374,9 @@ export default function Home() {
                     }
                   })
                   .catch(() => {
-                    setErrorMessage('Unexpected Error Occurred While Uploading Image');
+                    setErrorMessage(
+                      "Unexpected Error Occurred While Uploading Image"
+                    );
                     setStatus("error");
                   });
               }}
@@ -382,7 +397,7 @@ export default function Home() {
             <a
               href="javascript:void 0;"
               onClick={() => {
-                window.location.replace('/signout');
+                window.location.replace("/signout");
               }}
             >
               <h2>
@@ -453,7 +468,12 @@ export default function Home() {
                 mb={3}
                 as="a"
                 // href={process.env.NEXT_PUBLIC_APPSTORE_URL}
-                style={{ display: "block", bg: "sunken", borderRadius: 3, opacity: 0.5 }}
+                style={{
+                  display: "block",
+                  bg: "sunken",
+                  borderRadius: 3,
+                  opacity: 0.5,
+                }}
               >
                 <Heading mb={2}>
                   iOS App (coming soon) <span className="arrow">&rarr;</span>
