@@ -337,6 +337,7 @@ export default function Home() {
                   }
                 } catch (err) {}
 
+                const base64 = await toBase64(file)
                 const options = {
                   method: "POST",
                   body: JSON.stringify({
