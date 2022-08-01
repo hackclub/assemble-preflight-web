@@ -18,7 +18,7 @@ const toBase64 = (file) =>
 
 let statusMessageTranslator = {
   verified: "Your proof of vaccination has been verified!",
-  verifiedWithDiscrepancy: `Your vaccine card is valid, but there is a discrepancy we'll manually review.`,
+  verifiedWithDiscrepancy: `Your vaccine card is valid. However, there is a discrepancy that we'll need to manually review.`,
   humanReviewRequired: `We're reviewing your proof of vaccination.`,
   denied: `Your vaccination proof was denied, please upload new proof`,
   noData: `Please upload proof of vaccination.`,
