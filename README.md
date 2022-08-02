@@ -1,4 +1,9 @@
-# assemble-preflight-web
-Preflight vaccine card verification for Assemble
+<p align="center">
+<img src="https://user-images.githubusercontent.com/76178582/180593814-2224de99-736a-4f8d-8b0a-a982db76a193.png">
+</p>
 
-Everything else open source at [hackclub/assemble](https://github.com/hackclub/assemble).
+### Pre-event vaccination and COVID test verification
+
+---
+
+Everything else will be open sourced at [hackclub/assemble](https://github.com/hackclub/assemble).
