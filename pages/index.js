@@ -329,10 +329,11 @@ export default function Home() {
               }}
               href="javascript:void 0;"
               onClick={() => {
-                alert(
+                if(confirm(
                   `👋 Hey! Thanks for taking the time to upload your COVID-19 test result. Please only upload a test 24 hours before your first outbound flight or if you are not flying to SF, 24 hours before the event. Any tests taken earlier will be invalid. Thank you for your understanding!`
-                );
-                document.getElementById("fileinput2").click();
+                )){
+                  document.getElementById("fileinput2").click();
+                }
               }}
             >
               <Heading variant="lead" my={0} style={{ lineHeight: "0px" }}>
