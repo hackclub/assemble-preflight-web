@@ -24,6 +24,13 @@ let statusMessageTranslator = {
   noData: `Please upload proof of vaccination.`,
 };
 
+let testStatusMessageTranslator = {
+  verified: "Your proof of negative test has been verified!",
+  humanReviewRequired: `We're reviewing your proof of negative test.`,
+  denied: `Your negative test proof was denied, please upload new proof.`,
+  noData: `Please upload proof of a negative test.`,
+};
+
 let statusButtonTranslator = {
   verified: (
     <>
@@ -146,6 +153,10 @@ export default function Home() {
         }
         userDataResponse.vaccinationData = await fetch(
           "https://api.ticketing.assemble.hackclub.com/vaccinations",
+          { credentials: "include" }
+        ).then((res) => res.json());
+        userDataResponse.testingData = await fetch(
+          "https://api.ticketing.assemble.hackclub.com/tests",
           { credentials: "include" }
         ).then((res) => res.json());
         setUserData(userDataResponse);
@@ -305,6 +316,7 @@ export default function Home() {
             </Box>
             <Box
               bg="sunken"
+              className="card"
               p={3}
               mb={3}
               as="a"
@@ -312,11 +324,36 @@ export default function Home() {
                 display: "block",
                 borderRadius: 3,
                 fontWeight: 400,
-                opacity: 0.5,
+                cursor: "pointer",
+              }}
+              href="javascript:void 0;"
+              onClick={() => {
+                document.getElementById("fileinput2").click();
               }}
             >
-              <Heading>Upload Coming Soon...</Heading>
+              <Heading variant="lead" my={0} style={{ lineHeight: "0px" }}>
+                {loading
+                  ? "Loading..."
+                  : testStatusMessageTranslator[
+                      userData.testingData?.status
+                    ] || (
+                      <>
+                        Upload Proof of Negative COVID-19 Test{" "}
+                        <span className="arrow">&rarr;</span>
+                      </>
+                    )}
+              </Heading>
             </Box>
+            {userData?.testingData?.image?.data && (
+              <img
+                src={`data:${userData?.testingData?.image?.filetype};base64,${userData?.testingData?.image?.data}`}
+                style={{
+                  width: "100%",
+                  borderRadius: "3px",
+                }}
+                alt="FYI! HEICs previews are broken at the moment, fix coming soon! Don't worry though, we can still view the image."
+              />
+            )}
             <input
               type="file"
               accept="image/*"
@@ -362,6 +399,47 @@ export default function Home() {
                 setLoading(true);
                 fetch(
                   `https://api.ticketing.assemble.hackclub.com/vaccinations/image/base64`,
+                  options
+                )
+                  .then((res) => res.json())
+                  .then((json) => {
+                    if (!json.error) {
+                      router.reload();
+                    } else {
+                      setErrorMessage(json.reason);
+                      setStatus("error");
+                    }
+                  })
+                  .catch(() => {
+                    setErrorMessage(
+                      "Unexpected Error Occurred While Uploading Image"
+                    );
+                    setStatus("error");
+                  });
+              }}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              id="fileinput2"
+              style={{ display: "none" }}
+              onChange={async (e) => {
+                const file = e.target.files[0];
+                const base64 = await toBase64(file);
+                const options = {
+                  method: "POST",
+                  body: JSON.stringify({
+                    mimeType: file.type,
+                    data: base64,
+                  }),
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  credentials: "include",
+                };
+                setLoading(true);
+                fetch(
+                  `https://api.ticketing.assemble.hackclub.com/tests/image/base64`,
                   options
                 )
                   .then((res) => res.json())
