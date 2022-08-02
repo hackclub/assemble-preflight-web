@@ -303,6 +303,7 @@ export default function Home() {
               bg="orange"
               px={3}
               py={2}
+              mt={2}
               mb={3}
               sx={{
                 display: "block",
@@ -310,7 +311,6 @@ export default function Home() {
                 width: "fit-content",
                 color: "white",
                 fontWeight: 800,
-                opacity: 0.5,
               }}
             >
               Required: Negative COVID Test
