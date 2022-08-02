@@ -1,39 +1,39 @@
-import Head from "next/head";
-import theme from "../lib/theme";
-import React, { useEffect, useState } from "react";
+import Head from 'next/head'
+import theme from '../lib/theme'
+import React, { useEffect, useState } from 'react'
 
 const makeTitle = (title, name) =>
-  title === name ? title : `${title} – ${name}`;
+  title === name ? title : `${title} – ${name}`
 
 const Meta = ({
-  title = "Ticketing & Preflight Checks", // page title
-  name = "Assemble", // site name
-  description = "The first IRL high school hackathon in San Francisco since the pandemic and the beginning of a hackathon renaissance. Come join 150+ fellow hackers on Aug 5th for a hackathon to remember!", // page description
-  image = "https://assemble.hackclub.com/meta-assemble.png", // social card image URL
-  url = "https://ticketing.assemble.hackclub.com",
+  title = 'Ticketing & Preflight Checks', // page title
+  name = 'Assemble', // site name
+  description = 'The first IRL high school hackathon in San Francisco since the pandemic and the beginning of a hackathon renaissance. Come join 150+ fellow hackers on Aug 5th for a hackathon to remember!', // page description
+  image = 'https://assemble.hackclub.com/meta-assemble.png', // social card image URL
+  url = 'https://ticketing.assemble.hackclub.com',
   children,
 }) => {
-  const [focus, setFocus] = useState(null);
+  const [focus, setFocus] = useState(null)
 
   const onFocus = () => {
-    setFocus(true);
-  };
+    setFocus(true)
+  }
   const onBlur = () => {
-    setFocus(false);
-  };
+    setFocus(false)
+  }
 
   useEffect(() => {
-    setFocus(true);
-    window.addEventListener("focus", onFocus);
-    window.addEventListener("blur", onBlur);
+    setFocus(true)
+    window.addEventListener('focus', onFocus)
+    window.addEventListener('blur', onBlur)
     // Calls onFocus when the window first loads
-    onFocus();
+    onFocus()
     // Specify how to clean up after this effect:
     return () => {
-      window.removeEventListener("focus", onFocus);
-      window.removeEventListener("blur", onBlur);
-    };
-  }, []);
+      window.removeEventListener('focus', onFocus)
+      window.removeEventListener('blur', onBlur)
+    }
+  }, [])
 
   return (
     <Head>
@@ -43,10 +43,10 @@ const Meta = ({
       <meta key="tw_site" name="twitter:site" content="@hackclub" />
       <title key="title">
         {focus == null
-          ? "Hack Club Assemble"
+          ? 'Hack Club Assemble'
           : focus
-          ? "Come together..."
-          : "...over me"}
+          ? 'Come together...'
+          : '...over me'}
       </title>
       <meta
         key="og_title"
@@ -95,7 +95,7 @@ const Meta = ({
       <link rel="icon" type="image/png" href="/favicon.png" />
       {children}
     </Head>
-  );
-};
+  )
+}
 
-export default Meta;
+export default Meta

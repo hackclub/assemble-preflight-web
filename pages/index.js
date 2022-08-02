@@ -1,157 +1,82 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
+import getCookie from "../lib/cookie.js";
 import { useState, useEffect } from "react";
 import qr from "jsqr";
 import { Box, Container, Heading, Grid, Input, Button } from "theme-ui";
 import { useRouter } from "next/router";
-import VaccineCard from "../components/VaccineCard";
 
-const toBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () =>
-      resolve(reader.result.substring(reader.result.indexOf(",") + 1));
-    reader.onerror = (error) => reject(error);
-  });
+const toBase64 = file => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(reader.result.substring(reader.result.indexOf(',') + 1));
+  reader.onerror = error => reject(error);
+});
 
 let statusMessageTranslator = {
   verified: "Your proof of vaccination has been verified!",
-  verifiedWithDiscrepancy: `Your vaccine card is valid. However, there is a discrepancy that we'll need to manually review.`,
+  verifiedWithDiscrepancy: `We're reviewing your proof of vaccination.`,
   humanReviewRequired: `We're reviewing your proof of vaccination.`,
   denied: `Your vaccination proof was denied, please upload new proof`,
   noData: `Please upload proof of vaccination.`,
-};
+}
 
 let statusButtonTranslator = {
   verified: (
     <>
-      Re-upload proof <span className="arrow">&rarr;</span>
+      Re-upload proof{" "}
+      <span className="arrow">&rarr;</span>
     </>
   ),
   verifiedWithDiscrepancy: (
     <>
-      Re-upload proof <span className="arrow">&rarr;</span>
+      Re-upload proof{" "}
+      <span className="arrow">&rarr;</span>
     </>
   ),
   verified: (
     <>
-      Re-upload proof <span className="arrow">&rarr;</span>
+      Re-upload proof{" "}
+      <span className="arrow">&rarr;</span>
     </>
   ),
   denied: (
     <>
-      Re-upload proof <span className="arrow">&rarr;</span>
+      Re-upload proof{" "}
+      <span className="arrow">&rarr;</span>
     </>
   ),
   noData: (
     <>
-      Upload proof <span className="arrow">&rarr;</span>
+      Upload proof{" "}
+      <span className="arrow">&rarr;</span>
     </>
-  ),
-};
-
-async function qrCodeScan(file) {
-  const promise = new Promise((resolveScanned) => {
-    let resolved = false;
-
-    const convertURIToImageData = (url) => {
-      return new Promise((resolve, reject) => {
-        if (!url) {
-          return reject();
-        }
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        const image = document.createElement("img");
-        image.onload = () => {
-          canvas.width = image.naturalWidth;
-          canvas.height = image.naturalHeight;
-          context.drawImage(image, 0, 0, canvas.width, canvas.height);
-          resolve(context.getImageData(0, 0, canvas.width, canvas.height));
-        };
-        image.crossOrigin = "Anonymous";
-        image.src = url;
-      });
-    };
-    const reader = new FileReader();
-
-    reader.addEventListener(
-      "load",
-      function () {
-        // convert image file to base64 string
-        convertURIToImageData(reader.result).then((imageData) => {
-          console.log(imageData);
-
-          let output = qr(imageData.data, imageData.width, imageData.height);
-          console.log(output);
-          if (output) {
-            if (output?.data?.startsWith("shc:/") && !resolved) {
-              resolveScanned({
-                valid: true,
-                type: output?.version,
-                data: output?.data,
-              });
-              resolved = true;
-              return;
-            }
-            // qr code
-          }
-        });
-      },
-      false
-    );
-
-    reader.readAsDataURL(file);
-    setTimeout(() => {
-      if (!resolved) {
-        resolveScanned({
-          valid: false,
-        });
-        resolved = true;
-      }
-    }, 3000);
-  });
-  try {
-    const output = await promise;
-    return output;
-  } catch (err) {
-    return { valid: false };
-  }
+  )
 }
+
 
 export default function Home() {
   const [status, setStatus] = useState("loading");
+  const [accessToken, setAccessToken] = useState("");
   const [userData, setUserData] = useState({});
   const [greeting, setGreeting] = useState("Hello");
+  const [cardType, setCardType] = useState("");
   const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState(null);
   const router = useRouter();
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   useEffect(() => {
     (async () => {
-      let isAuthed = await fetch("/api/get-auth-state").then((res) =>
-        res.text()
-      );
-      if (isAuthed == "TRUE") {
+      let cookie = await fetch("/api/token").then((res) => res.text());
+      if (cookie) {
+        setAccessToken(cookie);
         setStatus("authed");
-        const userDataResponse = await fetch("/api/small-records").then((res) =>
-          res.json()
-        );
-        console.log({ userDataResponse });
-        if (userDataResponse.reauth) {
-          console.log(
-            "Received reauth request from server. This typically means api.ticketing.assemble.hackclub.com has rejected the current token."
-          );
-          return setStatus("unauthed");
-        }
-        userDataResponse.vaccinationData = await fetch(
-          "https://api.ticketing.assemble.hackclub.com/vaccinations",
-          { credentials: "include" }
-        ).then((res) => res.json());
-        setUserData(userDataResponse);
+        setUserData(await fetch("/api/records").then((res) => res.json()));
       } else {
         setStatus("unauthed");
       }
+      console.log(qr);
     })();
 
     let myDate = new Date();
@@ -241,9 +166,9 @@ export default function Home() {
                   //   "verifiedWithDiscrepancy" ||
                   // userData.vaccinationData?.status == "verified" ||
                   // loading
-                  // ? "default"
-                  // : "pointer",
-                  "pointer",
+                    // ? "default"
+                    // : "pointer",
+                  'pointer'
               }}
               href="javascript:void 0;"
               onClick={() => {
@@ -261,12 +186,10 @@ export default function Home() {
                 }
               }}
             >
-              <Heading variant="lead" my={0} style={{ lineHeight: "0px" }}>
+              <Heading variant="lead" my={0} style={{ lineHeight: '0px' }}>
                 {loading
                   ? "Loading..."
-                  : statusButtonTranslator[
-                      userData.vaccinationData?.status
-                    ] || (
+                  : statusButtonTranslator[userData.vaccinationData?.status] || (
                       <>
                         Upload Proof of Vaccination{" "}
                         <span className="arrow">&rarr;</span>
@@ -281,11 +204,7 @@ export default function Home() {
                   width: "100%",
                   borderRadius: "3px",
                 }}
-                alt="FYI! HEICs previews are broken at the moment, fix coming soon! Don't worry though, we can still view the image."
               />
-            )}
-            {userData?.vaccinationData?.record?.verified && (
-              <VaccineCard data={userData?.vaccinationData} mb="4" />
             )}
             <Box
               bg="orange"
@@ -301,7 +220,7 @@ export default function Home() {
                 opacity: 0.5,
               }}
             >
-              Required: Negative COVID Test
+              Required: Negative ART Test
             </Box>
             <Box
               bg="sunken"
@@ -324,46 +243,33 @@ export default function Home() {
               style={{ display: "none" }}
               onChange={async (e) => {
                 const file = e.target.files[0];
-
-                try {
-                  const qrData = await qrCodeScan(file);
-                  if (qrData.valid) {
-                    console.log(qrData);
-                    const resp = await fetch("/api/verified", {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        qr: qrData.data,
-                      }),
-                      credentials: "include",
-                    }).then((resp) => resp.json());
-                    if (resp.error) return;
-                    console.log(resp);
-                    router.reload();
-                  } else {
-                    console.log("invalid", qrData);
-                  }
-                } catch (err) {}
-
-                const base64 = await toBase64(file);
+                const formData = new FormData();
+                formData.append("data", file, "assemble_web_" + file.name);
+                console.log(file)
+                formData.append("token", accessToken);
+                const base64 = await toBase64(file)
                 const options = {
                   method: "POST",
                   body: JSON.stringify({
-                    mimeType: file.type,
-                    data: base64,
+                      "mimeType": file.type,
+                      "data": base64
                   }),
                   headers: {
-                    "Content-Type": "application/json",
-                  },
-                  credentials: "include",
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                  }
                 };
+                await fetch(
+                  `https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/users`,
+                  {
+                    method: "GET",
+                    headers: {
+                      Authorization: `Bearer ${accessToken}`,
+                    },
+                  }
+                );
                 setLoading(true);
-                fetch(
-                  `https://api.ticketing.assemble.hackclub.com/vaccinations/image/base64`,
-                  options
-                )
+                fetch(`https://${process.env.NEXT_PUBLIC_TICKETING_DOMAIN}/vaccinations/image/base64`, options)
                   .then((res) => res.json())
                   .then((json) => {
                     if (!json.error) {
@@ -374,9 +280,7 @@ export default function Home() {
                     }
                   })
                   .catch(() => {
-                    setErrorMessage(
-                      "Unexpected Error Occurred While Uploading Image"
-                    );
+                    setErrorMessageMessage('Unexpected Error Occurred While Uploading Image');
                     setStatus("error");
                   });
               }}
@@ -397,7 +301,7 @@ export default function Home() {
             <a
               href="javascript:void 0;"
               onClick={() => {
-                window.location.replace("/signout");
+                window.location.reload(true);
               }}
             >
               <h2>
@@ -436,7 +340,7 @@ export default function Home() {
             </Heading>
             <Box bg="red" p={3} mb={3} sx={{ borderRadius: 3, color: "white" }}>
               👋 Hey there! We're super excited to be hosting you in San
-              Francisco for Assemble 2022. Use this portal, or its associated
+              Francisco for Assemble 2022. Use this portal, or it's associated
               iOS app, to upload your proof of vaccination and your negative
               COVID-19 test (opens nearer to the event). After both have been
               verified, you will be provided a ticket with a barcode. Please
@@ -467,16 +371,11 @@ export default function Home() {
                 p={3}
                 mb={3}
                 as="a"
-                // href={process.env.NEXT_PUBLIC_APPSTORE_URL}
-                style={{
-                  display: "block",
-                  bg: "sunken",
-                  borderRadius: 3,
-                  opacity: 0.5,
-                }}
+                href={process.env.NEXT_PUBLIC_APPSTORE_URL}
+                style={{ display: "block", bg: "sunken", borderRadius: 3 }}
               >
                 <Heading mb={2}>
-                  iOS App (coming soon) <span className="arrow">&rarr;</span>
+                  iOS App <span className="arrow">&rarr;</span>
                 </Heading>
                 <Box>
                   Download the iOS app for preflight, vaccine verification, and
