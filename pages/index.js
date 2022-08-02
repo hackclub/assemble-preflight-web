@@ -26,6 +26,7 @@ let statusMessageTranslator = {
 
 let testStatusMessageTranslator = {
   verified: "Your proof of negative test has been verified!",
+  verifiedWithDiscrepancy: `We're reviewing your proof of negative test.`,
   humanReviewRequired: `We're reviewing your proof of negative test.`,
   denied: `Your negative test proof was denied, please upload new proof.`,
   noData: `Please upload proof of a negative test.`,
@@ -328,6 +329,9 @@ export default function Home() {
               }}
               href="javascript:void 0;"
               onClick={() => {
+                alert(
+                  `👋 Hey! Thanks for taking the time to upload your COVID-19 test result. Please only upload a test 24 hours before your first outbound flight or if you are not flying to SF, 24 hours before the event. Any tests taken earlier will be invalid. Thank you for your understanding!`
+                );
                 document.getElementById("fileinput2").click();
               }}
             >
