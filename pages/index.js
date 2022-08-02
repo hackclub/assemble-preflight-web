@@ -323,6 +323,11 @@ export default function Home() {
               id="fileinput"
               style={{ display: "none" }}
               onChange={async (e) => {
+                try {
+                  await fetch('/api/me');
+                } catch (err) {
+                  console.error(err);
+                }
                 const file = e.target.files[0];
 
                 try {
