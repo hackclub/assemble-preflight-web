@@ -292,6 +292,7 @@ export default function Home() {
                 style={{
                   width: "100%",
                   borderRadius: "3px",
+                  marginBottom: '8px'
                 }}
                 alt="FYI! HEICs previews are broken at the moment, fix coming soon! Don't worry though, we can still view the image."
               />
@@ -303,7 +304,6 @@ export default function Home() {
               bg="orange"
               px={3}
               py={2}
-              mt={2}
               mb={3}
               sx={{
                 display: "block",
