@@ -6,7 +6,7 @@ export default async function (req, res) {
   const token = cookies.get("assemble_access_token");
   if (!token) return res.json({});
   const response = await fetch(
-    "https://api.id.assemble.hackclub.com/users/me",
+    "https://api.ticketing.assemble.hackclub.com/users/small",
     {
       method: "GET",
       headers: {
