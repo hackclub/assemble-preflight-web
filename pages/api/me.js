@@ -14,5 +14,6 @@ export default async function (req, res) {
       },
     }
   ).then((response) => response.json());
+  console.log(response);
   res.json(response);
 }

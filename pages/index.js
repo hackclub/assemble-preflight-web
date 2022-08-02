@@ -366,7 +366,7 @@ export default function Home() {
               style={{ display: "none" }}
               onChange={async (e) => {
                 try {
-                  await fetch('/api/me');
+                  await fetch('/api/me').then(response => response.text()).then(console.log);
                 } catch (err) {
                   console.error(err);
                 }
