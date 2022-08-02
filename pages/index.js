@@ -28,7 +28,7 @@ let testStatusMessageTranslator = {
   verified: "Your proof of negative test has been verified!",
   verifiedWithDiscrepancy: `We're reviewing your proof of negative test.`,
   humanReviewRequired: `We're reviewing your proof of negative test.`,
-  denied: `Your negative test proof was denied, please upload new proof.`,
+  denied: `Your negative test proof was denied, please retest.`,
   noData: `Please upload proof of a negative test.`,
 };
 
