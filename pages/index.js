@@ -506,7 +506,9 @@ export default function Home() {
                 <iframe src="/ticket.html" style={{ 
                   width: "100%",
                   background: 'white',
-                  minHeight: '800px'
+                  minHeight: '800px',
+                  border: 'none',
+                  borderRadius: '4px'
                  }}></iframe>
               </>
             )}
