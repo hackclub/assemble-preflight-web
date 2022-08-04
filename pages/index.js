@@ -503,10 +503,11 @@ export default function Home() {
                 Your Assemble Ticket
               </Box>
 
-                <img
-                  src="https://ticketing.assemble.hackclub.com/api/ticket"
-                  style={{ margin: "0px auto" }}
-                />
+                <iframe src="/ticket.html" style={{ 
+                  width: "100%",
+                  background: 'white',
+                  minHeight: '800px'
+                 }}></iframe>
               </>
             )}
           </Container>
