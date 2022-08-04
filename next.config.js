@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const withPWA = require('next-pwa');
+const withPWA = require("next-pwa");
 
 const nextConfig = withPWA({
   reactStrictMode: true,
@@ -10,8 +10,8 @@ const nextConfig = withPWA({
     },
   },
   pwa: {
-    dest: 'public',
-    swSrc: 'sw.js',
+    dest: "public",
+    swSrc: "sw.js",
   },
   async redirects() {
     return [
