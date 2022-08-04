@@ -22,6 +22,7 @@ export default async function (req, res) {
             res.setHeader('Content-Type', 'application/vnd.apple.pkpass');
             const headers = Object.fromEntries(response.headers);
             for (const header in headers) {
+                console.log(header, headers[header]);
                 res.setHeader(header, headers[header]);
             }
             return res.send(await response.buffer());
