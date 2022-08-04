@@ -19,6 +19,12 @@ export default async function (req, res) {
   })
     .then((response) => response.text())
     .then((response) => {
-      res.send(response);
+        let json = Try(() => JSON.parse(response));
+        if (json) {
+          res.status(404).send("ERROR\n\n" + JSON.stringify(json, null, 4));
+        } else {
+          res.setHeader('Content-Type', 'application/vnd.apple.pkpass');
+          res.send(response);
+        }
     });
 }
