@@ -21,7 +21,7 @@ export default async function (req, res) {
     .then((response) => {
       let json = Try(() => JSON.parse(response));
       if (json) {
-        res.status(400).send("ERROR\n\n" + JSON.stringify(json, null, 4));
+        res.status(404).send("ERROR\n\n" + JSON.stringify(json, null, 4));
       } else {
         res.setHeader('Content-Type', 'image/svg+xml');
         res.send(response);

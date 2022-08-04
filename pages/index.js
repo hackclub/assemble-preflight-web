@@ -140,7 +140,7 @@ export default function Home() {
 
   useEffect(() => {
     fetch("/api/ticket")
-      .then(() => setQrCode(true))
+      .then(r => setQrCode(r.status == 200))
       .catch(() => setQrCode(false));
     (async () => {
       let isAuthed = await fetch("/api/get-auth-state").then((res) =>
