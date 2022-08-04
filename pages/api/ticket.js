@@ -23,6 +23,7 @@ export default async function (req, res) {
       if (json) {
         res.status(400).send("ERROR\n\n" + JSON.stringify(json, null, 4));
       } else {
+        res.setHeader('Content-Type', 'image/svg+xml');
         res.send(response);
       }
     });

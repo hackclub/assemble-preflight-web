@@ -491,7 +491,7 @@ export default function Home() {
                 bg="blue"
                 px={3}
                 py={2}
-                mb={3}
+                my={3}
                 sx={{
                   display: "block",
                   borderRadius: 3,
