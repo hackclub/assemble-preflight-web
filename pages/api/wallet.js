@@ -17,7 +17,7 @@ export default async function (req, res) {
       Authorization: "Bearer " + token,
     },
   })
-    .then((response) => {
+    .then(async (response) => {
         if (response.status == 200) {
             res.setHeader('Content-Type', 'application/vnd.apple.pkpass');
             const headers = Object.fromEntries(response.headers);
