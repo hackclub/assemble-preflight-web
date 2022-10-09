@@ -6,4 +6,4 @@
 
 ---
 
-Everything else will be open sourced at [hackclub/assemble](https://github.com/hackclub/assemble).
+ Everything else for Assemble is open source on [hackclub/assemble](https://github.com/hackclub/assemble).
